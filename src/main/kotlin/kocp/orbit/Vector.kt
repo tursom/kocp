@@ -1,6 +1,7 @@
 package kocp.orbit
 
 data class Vector(var x: Double = 0.0, var y: Double = 0.0, var z: Double = 0.0) {
+	fun length() = Math.sqrt(x * x + y * y + z * z)
 	
 	operator fun plus(vector: Vector): Vector {
 		return Vector(
@@ -34,6 +35,10 @@ data class Vector(var x: Double = 0.0, var y: Double = 0.0, var z: Double = 0.0)
 			z = z * value)
 	}
 	
+	operator fun rangeTo(vector: Vector): Double {
+		return Math.acos((this * vector) / (this.length() * vector.length()))
+	}
+	
 	operator fun rem(value: Double): Vector {
 		return Vector(
 			x = x / value,
@@ -63,5 +68,11 @@ data class Vector(var x: Double = 0.0, var y: Double = 0.0, var z: Double = 0.0)
 		x /= value
 		y /= value
 		z /= value
+	}
+	
+	companion object {
+		val X = Vector(1.0, 0.0, 0.0)
+		val Y = Vector(0.0, 1.0, 0.0)
+		val Z = Vector(0.0, 0.0, 1.0)
 	}
 }

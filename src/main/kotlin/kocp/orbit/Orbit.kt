@@ -2,6 +2,7 @@ package kocp.orbit
 
 import java.lang.Math.*
 
+@Suppress("DEPRECATED_IDENTITY_EQUALS")
 class Orbit(val centerBody: CenterBody = CenterBody(),
             `semi-major axis`: Double = 0.0,
             eccentricity: Double = 0.0,
@@ -10,12 +11,24 @@ class Orbit(val centerBody: CenterBody = CenterBody(),
             `argument of periapsis`: Double = 0.0,
             `mean anomaly at epoch`: Double = 0.0) : Value() {
 	
-	//TODO
-	constructor(ae: Double, pe: Double, centerBody: CenterBody, `velocity of ae`: Vector, `velocity of pe`: Vector) : this() {}
-	
-	//TODO
-	constructor(ae: Vector, pe: Vector, centerBody: CenterBody, `velocity of ae`: Vector, `velocity of pe`: Vector) : this() {
-		
+	constructor(
+		ap: Double,
+		pe: Double,
+		centerBody: CenterBody,
+		`location of pe`: Vector = Vector(1.0, 0.0, 0.0),
+		`velocity of pe`: Vector = Vector(0.0, 1.0, 0.0))
+		:
+		this(
+			centerBody = centerBody,
+			`semi-major axis` = (ap + pe) / 2,
+			eccentricity = if (ap === pe) 0.0 else pe * pe * `velocity of pe`.length() / centerBody.GM - 1,
+			inclination = 0.0) {
+		val range = (`location of pe` % `velocity of pe`)..Vector.Z
+		inclination = PI / 2 -
+			if (range > 0)
+				range
+			else
+				-range
 	}
 	
 	var `semi-major axis`: Double = `semi-major axis`
@@ -123,6 +136,10 @@ class Orbit(val centerBody: CenterBody = CenterBody(),
 	val orbitOvalParameterC
 		get() = sqrt(orbitOvalParameterA * orbitOvalParameterA - orbitOvalParameterB * orbitOvalParameterB)
 	
+	val orbitOvalParameterE
+		get() = eccentricity
+	
+	
 	val orbitOvalParameterS
 		get() = PI * orbitOvalParameterA * orbitOvalParameterA
 	
@@ -166,7 +183,6 @@ class Orbit(val centerBody: CenterBody = CenterBody(),
 		
 		return se - sb + orbitOvalParameterS * t
 	}
-	
 	
 	class EccentricityOutOfRangeException(message: String? = null) : OutOfRangeException(message)
 	class InclinationOutOfRangeException(message: String? = null) : OutOfRangeException(message)
