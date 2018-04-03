@@ -1,3 +1,5 @@
+package kocp.orbit
+
 class CenterBody(GM: Double? = null, M: Double? = null, radius: Double = 0.0) : Value() {
 	val GM: Double = GM ?: (M ?: 0.0) * G
 	val radius: Double =

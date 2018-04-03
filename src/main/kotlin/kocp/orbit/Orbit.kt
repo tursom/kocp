@@ -1,3 +1,5 @@
+package kocp.orbit
+
 import java.lang.Math.*
 
 class Orbit(val centerBody: CenterBody = CenterBody(),
@@ -149,7 +151,7 @@ class Orbit(val centerBody: CenterBody = CenterBody(),
 		var sb = 0.0
 		if (begin != 0.0)
 			sb = -squareOfPe * b * (2 * atan(
-					((-1 + e) * sinBegin) / (c * (1 + cosBegin))
+				((-1 + e) * sinBegin) / (c * (1 + cosBegin))
 			) * (1 + e * cosBegin) + e * c * sinBegin) / (a * (1 + e * cosBegin))
 		
 		val cosEnd = cos(end)
@@ -157,7 +159,7 @@ class Orbit(val centerBody: CenterBody = CenterBody(),
 		var se = 0.0
 		if (end != 0.0)
 			se = -squareOfPe * b * (2 * atan(
-					((-1 + e) * sinEnd) / (c * (1 + cosEnd))
+				((-1 + e) * sinEnd) / (c * (1 + cosEnd))
 			) * (1 + e * cosEnd) + e * c * sinEnd) / (a * (1 + e * cosEnd))
 		if ((end - begin) / PI < 0)
 			se += orbitOvalParameterS
