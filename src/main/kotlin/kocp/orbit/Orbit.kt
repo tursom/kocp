@@ -1,5 +1,6 @@
 package kocp.orbit
 
+import com.google.gson.Gson
 import kocp.math.*
 import kocp.orbit.CenterBody.Companion.Earth
 import kotlin.math.*
@@ -7,7 +8,7 @@ import kotlin.math.*
 class Orbit(apogee: Double = 0.0,
             perigee: Double = 0.0,
             var range: Double = 0.0,
-            val centerBody: CenterBody = Earth,
+            var centerBody: CenterBody = Earth,
             `location of pe`: Vector = Vector(1.0, 0.0, 0.0),
             `velocity of pe`: Vector = Vector(0.0, 1.0, 0.0)) : Value() {
 
@@ -149,6 +150,8 @@ class Orbit(apogee: Double = 0.0,
 		return areaEnd - areaBegin + orbitOvalParameterS * t
 	}
 
+	fun toJson() = Gson().toJson(this)
+
 	private fun checkApogeeAndPerigee() {
 		if (apogee < perigee) {
 			val swap = apogee
@@ -190,9 +193,10 @@ class Orbit(apogee: Double = 0.0,
 	}
 
 	companion object {
-		private fun Vector.acuteAngle(vector: Vector): Double {
-			val range = this..vector
-			return if (range < PI / 2) range else PI - range
+		fun fromJson(json: String): Orbit? {
+			val orbit = Gson().fromJson(json, Orbit::class.java)
+			(orbit ?: return null).centerBody = CenterBody[orbit.centerBody]
+			return orbit
 		}
 	}
 }
