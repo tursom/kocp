@@ -69,32 +69,32 @@ class Orbit(apogee: Double = 0.0,
 	 * ，其中x为角度
 	 * 对其做不定积分，得
 	 *  -(
-	 *    (
-	 *      (2-2*e)*sin(x)^2
-	 *      +(2*e+2)*cos(x)^2
-	 *      +(4*e+4)*cos(x)
-	 *      +2*e+2)*atan(
-	 *        (
-	 *          (e-1)*sin(x)
-	 *        )/(
-	 *          sqrt(1-e)*sqrt(e+1)*(cos(x)+1)
-	 *        )
-	 *      )
-	 *      +sqrt(1-e)*sqrt(e+1)*(2*e*cos(x)
-	 *      +2*e
-	 *    )*sin(x)
-	 *  )/(
-	 *    sqrt(1-e)*sqrt(e+1)*(
-	 *      (e^3-e^2-e+1)*sin(x)^2
-	 *      +(
-	 *        (-e^3)-e^2+e+1
-	 *      )*cos(x)^2
-	 *      +(
-	 *        (-2*e^3)-2*e^2+2*e+2
-	 *      )*cos(x)
-	 *      -e^3-e^2+e+1
-	 *    )
-	 *  )
+	 *     (
+	 *       (2-2*e)*sin(x)^2
+	 *       +(2*e+2)*cos(x)^2
+	 *       +(4*e+4)*cos(x)
+	 *       +2*e+2)*atan(
+	 *         (
+	 *           (e-1)*sin(x)
+	 *         )/(
+	 *           sqrt(1-e)*sqrt(e+1)*(cos(x)+1)
+	 *         )
+	 *       )
+	 *       +sqrt(1-e)*sqrt(e+1)*(2*e*cos(x)
+	 *       +2*e
+	 *     )*sin(x)
+	 *   )/(
+	 *     sqrt(1-e)*sqrt(e+1)*(
+	 *       (e^3-e^2-e+1)*sin(x)^2
+	 *       +(
+	 *         (-e^3)-e^2+e+1
+	 *       )*cos(x)^2
+	 *       +(
+	 *         (-2*e^3)-2*e^2+2*e+2
+	 *       )*cos(x)
+	 *       -e^3-e^2+e+1
+	 *     )
+	 *   )
 	 *  * ( 1 + e) * ( 1 + e) * perigee * perigee / 2
 	 *
 	 *  化简得
@@ -110,10 +110,10 @@ class Orbit(apogee: Double = 0.0,
 	 *      + e * sqrt(1 - e * e) * sin(x)
 	 *
 	 *    ) / (
-	 *          2 * sqrt(
-	 *                    (1 - e) * (1 - e) * (1 - e)
-	 *                  ) * ( 1 + e * cos(x) )
-	 *        )
+	 *      2 * sqrt(
+	 *        (1 - e) * (1 - e) * (1 - e)
+	 *      ) * ( 1 + e * cos(x) )
+	 *    )
 	 *
 	 *  即为本算法所用公式
 	 */
