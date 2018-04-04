@@ -1,13 +1,19 @@
 package kocp.math
 
 open class Vector(open var x: Double = 0.0, open var y: Double = 0.0, open var z: Double = 0.0) {
+	
+	val unit: UnitVector
+		get() {
+			val length = length()
+			return UnitVector(x / length, y / length, z / length)
+		}
+	
 	open fun length() = Math.sqrt(x * x + y * y + z * z)
 	
 	open fun lengthSquare() = x * x + y * y + z * z
 	
-	fun unit(): Vector {
-		val length = length()
-		return Vector(x / length, y / length, z / length)
+	operator fun unaryMinus(): Vector {
+		return Vector(-x, -y, -z)
 	}
 	
 	operator fun plus(vector: Vector) = Vector(

@@ -1,14 +1,11 @@
 package kocp.orbit
 
-import kocp.math.Value
-import kocp.math.Vector
-import java.lang.Math.*
+import kocp.math.*
+import kotlin.math.*
 
-
-@Suppress("DEPRECATED_IDENTITY_EQUALS")
 class Orbit(apogee: Double = 0.0,
             perigee: Double = 0.0,
-            val range: Double = 0.0,
+            var range: Double = 0.0,
             val centerBody: CenterBody = CenterBody(),
             `location of pe`: Vector = Vector(1.0, 0.0, 0.0),
             `velocity of pe`: Vector = Vector(0.0, 1.0, 0.0)) : Value() {
@@ -26,16 +23,17 @@ class Orbit(apogee: Double = 0.0,
 		}
 	
 	var locationOfPe: Vector = `location of pe`
-		set(value) {}
 	
 	var velocityOfPerigee: Vector = `velocity of pe`
-		set(value) {}
 	
 	val e
 		get() = orbitOvalParameterE
 	
 	val area
 		get() = PI * orbitOvalParameterA * orbitOvalParameterB
+	
+	val high
+		get() = getHigh(range)
 	
 	val orbitOvalParameterA
 		get() = (apogee + perigee) / 2
@@ -110,14 +108,12 @@ class Orbit(apogee: Double = 0.0,
 	 *      + e * sqrt(1 - e * e) * sin(x)
 	 *
 	 *    ) / (
-	 *      2 * sqrt(
-	 *        (1 - e) * (1 - e) * (1 - e)
-	 *      ) * ( 1 + e * cos(x) )
+	 *      2 * pow((1 - e), 1.5) * ( 1 + e * cos(x) )
 	 *    )
 	 *
 	 *  即为本算法所用公式
 	 */
-	fun getArea(begin: Double, end: Double): Double {
+	fun getArea(begin: Double = 0.0, end: Double = 0.0): Double {
 		val t = if (end > begin) {
 			floor((end - begin) / (PI * 2)).toInt()
 		} else {
@@ -125,28 +121,28 @@ class Orbit(apogee: Double = 0.0,
 		}
 		
 		val e = e
-		val a = 2 * sqrt((1 - e) * (1 - e) * (1 - e))
+		val a = 2 * (1 - e).pow(1.5)
 		val b = sqrt(1 + e)
 		val c = sqrt(1 - e * e)
-		val peSquare = perigee * perigee
 		
-		val cosBegin = cos(begin)
-		val sinBegin = sin(begin)
+		val cosBegin = begin.cos
+		val sinBegin = begin.sin
 		val areaBegin =
-			if (begin != 0.0)
-				-peSquare * b * (2 * atan(
+			if ((begin % (2 * PI)) != 0.0)
+				-perigee.square * b * (2 * atan(
 					(-1 + e) * sinBegin / (c * (1 + cosBegin))
 				) * (1 + e * cosBegin)
 					+ e * c * sinBegin) / (a * (1 + e * cosBegin))
 			else 0.0
 		
-		val cosEnd = cos(end)
-		val sinEnd = sin(end)
+		val cosEnd = end.cos
+		val sinEnd = end.sin
 		val areaEnd =
-			if (end != 0.0)
-				-peSquare * b * (2 * atan(
+			if ((end % (2 * PI)) != 0.0)
+				-perigee.square * b * (2 * atan(
 					(-1 + e) * sinEnd / (c * (1 + cosEnd))
-				) * (1 + e * cosEnd) + e * c * sinEnd) / (a * (1 + e * cosEnd))
+				) * (1 + e * cosEnd)
+					+ e * c * sinEnd) / (a * (1 + e * cosEnd))
 			else 0.0
 		
 		return areaEnd - areaBegin + orbitOvalParameterS * t
@@ -157,7 +153,39 @@ class Orbit(apogee: Double = 0.0,
 			val swap = apogee
 			apogee = perigee
 			perigee = swap
+			velocityOfPerigee = -velocityOfPerigee
+			locationOfPe = -locationOfPe
 		}
+	}
+	
+	override fun toString(): String {
+		return "Orbit(range=$range, centerBody=$centerBody, apogee=$apogee, perigee=$perigee, locationOfPe=$locationOfPe, velocityOfPerigee=$velocityOfPerigee)"
+	}
+	
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (javaClass != other?.javaClass) return false
+		
+		other as Orbit
+		
+		if (range != other.range) return false
+		if (centerBody != other.centerBody) return false
+		if (apogee != other.apogee) return false
+		if (perigee != other.perigee) return false
+		if (locationOfPe != other.locationOfPe) return false
+		if (velocityOfPerigee != other.velocityOfPerigee) return false
+		
+		return true
+	}
+	
+	override fun hashCode(): Int {
+		var result = range.hashCode()
+		result = 31 * result + centerBody.hashCode()
+		result = 31 * result + apogee.hashCode()
+		result = 31 * result + perigee.hashCode()
+		result = 31 * result + locationOfPe.hashCode()
+		result = 31 * result + velocityOfPerigee.hashCode()
+		return result
 	}
 	
 	companion object {

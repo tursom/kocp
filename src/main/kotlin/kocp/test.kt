@@ -2,12 +2,9 @@ package kocp
 
 import kocp.orbit.CenterBody
 import kocp.orbit.Orbit
-import kotlin.math.PI
 
 fun main(args: Array<String>) {
 	val orbit = Orbit(10000.0, 10000.0, 0.0, CenterBody(GM = 1000.0, radius = 10000.0))
-	println(orbit.orbitOvalParameterS)
-	println(orbit.getArea(0.0, PI * 2))
-	println(orbit.orbitOvalParameterS / 2)
-	println(orbit.getArea(0.0, PI))
+	orbit.perigee = orbit.apogee * 10
+	println(orbit)
 }

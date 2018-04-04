@@ -52,4 +52,8 @@ class UnitVector(x: Double, y: Double, z: Double) : Vector(x, y, z) {
 		super.y /= length
 		super.z /= length
 	}
+	
+	override fun toString(): String {
+		return "Unit${super.toString()}"
+	}
 }
