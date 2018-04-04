@@ -1,15 +1,18 @@
 package kocp.orbit
 
+import kocp.math.Value
+import kocp.math.Vector
 import java.lang.Math.*
+
 
 @Suppress("DEPRECATED_IDENTITY_EQUALS")
 class Orbit(val centerBody: CenterBody = CenterBody(),
             `semi-major axis`: Double = 0.0,
             eccentricity: Double = 0.0,
             inclination: Double = 0.0,
-            `longitude of the ascending node`: Double = 0.0,
-            `argument of periapsis`: Double = 0.0,
-            `mean anomaly at epoch`: Double = 0.0) : Value() {
+            longitudeOfTheAscendingNode: Double = 0.0,
+            argumentOfPeriapsis: Double = 0.0,
+            meanAnomalyAtEpoch: Double = 0.0) : Value() {
 	
 	constructor(
 		ap: Double,
@@ -22,14 +25,9 @@ class Orbit(val centerBody: CenterBody = CenterBody(),
 			centerBody = centerBody,
 			`semi-major axis` = (ap + pe) / 2,
 			eccentricity = if (ap === pe) 0.0 else pe * pe * `velocity of pe`.length() / centerBody.GM - 1,
-			inclination = 0.0) {
-		val range = (`location of pe` % `velocity of pe`)..Vector.Z
-		inclination = PI / 2 -
-			if (range > 0)
-				range
-			else
-				-range
-	}
+			inclination = PI / 2 - (`location of pe` % `velocity of pe`).acuteAngle(vector = Vector.Z),
+			//TODO
+			longitudeOfTheAscendingNode = 0.0)
 	
 	var `semi-major axis`: Double = `semi-major axis`
 	
@@ -59,7 +57,7 @@ class Orbit(val centerBody: CenterBody = CenterBody(),
 			}
 		}
 	
-	var `longitude of the ascending node`: Double = `longitude of the ascending node`
+	var longitudeOfTheAscendingNode: Double = longitudeOfTheAscendingNode
 		/**
 		 * @param value Range of -PI to PI
 		 * @throws LongitudeOfTheAscendingNodeOutOfRangeException
@@ -72,7 +70,7 @@ class Orbit(val centerBody: CenterBody = CenterBody(),
 			}
 		}
 	
-	var `argument of periapsis`: Double = `argument of periapsis`
+	var argumentOfPeriapsis: Double = argumentOfPeriapsis
 		/**
 		 * @param value Range of -PI to PI
 		 * @throwsArgumentOfPeriapsisOutOfRangeException
@@ -85,7 +83,7 @@ class Orbit(val centerBody: CenterBody = CenterBody(),
 			}
 		}
 	
-	var `mean anomaly at epoch`: Double = `mean anomaly at epoch`
+	var meanAnomalyAtEpoch: Double = meanAnomalyAtEpoch
 		/**
 		 * @param value Range of 0 to PI*2
 		 * @throwsArgumentOfPeriapsisOutOfRangeException
@@ -143,12 +141,12 @@ class Orbit(val centerBody: CenterBody = CenterBody(),
 	val orbitOvalParameterS
 		get() = PI * orbitOvalParameterA * orbitOvalParameterA
 	
-	fun getH(range: Double): Double {
+	fun getHigh(range: Double): Double {
 		val e = e
 		return perigee * (1 + e) / (1 + e * cos(range))
 	}
 	
-	fun getS(begin: Double, end: Double): Double {
+	fun getArea(begin: Double, end: Double): Double {
 		var t = if (end > begin) {
 			Math.ceil(end - begin / Math.PI).toInt()
 		} else {
@@ -165,23 +163,23 @@ class Orbit(val centerBody: CenterBody = CenterBody(),
 		
 		val cosBegin = cos(begin)
 		val sinBegin = sin(begin)
-		var sb = 0.0
+		var areaBegin = 0.0
 		if (begin != 0.0)
-			sb = -squareOfPe * b * (2 * atan(
+			areaBegin = -squareOfPe * b * (2 * atan(
 				((-1 + e) * sinBegin) / (c * (1 + cosBegin))
 			) * (1 + e * cosBegin) + e * c * sinBegin) / (a * (1 + e * cosBegin))
 		
 		val cosEnd = cos(end)
 		val sinEnd = sin(end)
-		var se = 0.0
+		var areaEnd = 0.0
 		if (end != 0.0)
-			se = -squareOfPe * b * (2 * atan(
+			areaEnd = -squareOfPe * b * (2 * atan(
 				((-1 + e) * sinEnd) / (c * (1 + cosEnd))
 			) * (1 + e * cosEnd) + e * c * sinEnd) / (a * (1 + e * cosEnd))
 		if ((end - begin) / PI < 0)
-			se += orbitOvalParameterS
+			areaEnd += orbitOvalParameterS
 		
-		return se - sb + orbitOvalParameterS * t
+		return areaEnd - areaBegin + orbitOvalParameterS * t
 	}
 	
 	class EccentricityOutOfRangeException(message: String? = null) : OutOfRangeException(message)
@@ -189,4 +187,11 @@ class Orbit(val centerBody: CenterBody = CenterBody(),
 	class LongitudeOfTheAscendingNodeOutOfRangeException(message: String? = null) : OutOfRangeException(message)
 	class ArgumentOfPeriapsisOutOfRangeException(message: String? = null) : OutOfRangeException(message)
 	class MeanAnomalyAtEpochOutOfRangeException(message: String? = null) : OutOfRangeException(message)
+	
+	companion object {
+		private fun Vector.acuteAngle(vector: Vector): Double {
+			val range = this..vector
+			return if (range < PI / 2) range else PI - range
+		}
+	}
 }
