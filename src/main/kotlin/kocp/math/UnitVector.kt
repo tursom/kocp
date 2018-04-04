@@ -7,9 +7,12 @@ class UnitVector(x: Double, y: Double, z: Double) : Vector(x, y, z) {
 		super.y /= length
 		super.z /= length
 	}
-	
+
+	val vector
+		get() = Vector(x, y, z)
+
 	override fun length() = 1.0
-	
+
 	override var x: Double
 		get() = super.x
 		set(value) {
@@ -18,21 +21,21 @@ class UnitVector(x: Double, y: Double, z: Double) : Vector(x, y, z) {
 			super.y /= length
 			super.z /= length
 		}
-	
+
 	override fun plusAssign(vector: Vector) {
 		super.plusAssign(vector)
 		toUnit()
 	}
-	
+
 	override fun minusAssign(vector: Vector) {
 		super.minusAssign(vector)
 		toUnit()
 	}
-	
+
 	override fun timesAssign(value: Double) {}
-	
+
 	override fun divAssign(value: Double) {}
-	
+
 	override var y: Double
 		get() = super.y
 		set(value) {
@@ -45,14 +48,14 @@ class UnitVector(x: Double, y: Double, z: Double) : Vector(x, y, z) {
 			super.z = value
 			toUnit()
 		}
-	
+
 	private fun toUnit() {
 		val length = super.length()
 		super.x /= length
 		super.y /= length
 		super.z /= length
 	}
-	
+
 	override fun toString(): String {
 		return "Unit${super.toString()}"
 	}
