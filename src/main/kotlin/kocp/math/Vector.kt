@@ -3,6 +3,13 @@ package kocp.math
 open class Vector(open var x: Double = 0.0, open var y: Double = 0.0, open var z: Double = 0.0) {
 	open fun length() = Math.sqrt(x * x + y * y + z * z)
 	
+	open fun lengthSquare() = x * x + y * y + z * z
+	
+	fun unit(): Vector {
+		val length = length()
+		return Vector(x / length, y / length, z / length)
+	}
+	
 	operator fun plus(vector: Vector) = Vector(
 		x = x + vector.x,
 		y = y + vector.y,
@@ -14,7 +21,6 @@ open class Vector(open var x: Double = 0.0, open var y: Double = 0.0, open var z
 		z = z - vector.z)
 	
 	operator fun times(vector: Vector) = x * vector.x + y * vector.y + z * vector.z
-	
 	
 	operator fun rem(vector: Vector) = Vector(
 		x = y * vector.z - z * vector.y,
@@ -33,36 +39,25 @@ open class Vector(open var x: Double = 0.0, open var y: Double = 0.0, open var z
 	
 	operator fun rangeTo(vector: Vector) = Math.acos((this * vector) / (this.length() * vector.length()))
 	
-	operator fun rem(value: Double) = Vector(
-		x = x / value,
-		y = y / value,
-		z = z / value)
-	
-	operator fun plusAssign(vector: Vector) {
+	open operator fun plusAssign(vector: Vector) {
 		x += vector.x
 		y += vector.y
 		z += vector.z
 	}
 	
-	operator fun minusAssign(vector: Vector) {
+	open operator fun minusAssign(vector: Vector) {
 		x -= vector.x
 		y -= vector.y
 		z -= vector.z
 	}
 	
-	operator fun timesAssign(value: Double) {
+	open operator fun timesAssign(value: Double) {
 		x *= value
 		y *= value
 		z *= value
 	}
 	
-	operator fun divAssign(value: Double) {
-		x /= value
-		y /= value
-		z /= value
-	}
-	
-	operator fun remAssign(value: Double) {
+	open operator fun divAssign(value: Double) {
 		x /= value
 		y /= value
 		z /= value
@@ -74,13 +69,17 @@ open class Vector(open var x: Double = 0.0, open var y: Double = 0.0, open var z
 	
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
-		if (javaClass != other?.javaClass) return false
 		
-		other as Vector
+		val value =
+			try {
+				other as Vector
+			} catch (e: Exception) {
+				return false
+			}
 		
-		if (x != other.x) return false
-		if (y != other.y) return false
-		if (z != other.z) return false
+		if (x != value.x) return false
+		if (y != value.y) return false
+		if (z != value.z) return false
 		
 		return true
 	}

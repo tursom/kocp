@@ -6,123 +6,33 @@ import java.lang.Math.*
 
 
 @Suppress("DEPRECATED_IDENTITY_EQUALS")
-class Orbit(val centerBody: CenterBody = CenterBody(),
-            `semi-major axis`: Double = 0.0,
-            eccentricity: Double = 0.0,
-            inclination: Double = 0.0,
-            longitudeOfTheAscendingNode: Double = 0.0,
-            argumentOfPeriapsis: Double = 0.0,
-            meanAnomalyAtEpoch: Double = 0.0) : Value() {
+class Orbit(apogee: Double = 0.0,
+            perigee: Double = 0.0,
+            range: Double = 0.0,
+            val centerBody: CenterBody = CenterBody(),
+            `location of pe`: Vector = Vector(1.0, 0.0, 0.0),
+            `velocity of pe`: Vector = Vector(0.0, 1.0, 0.0)) : Value() {
 	
-	constructor(
-		ap: Double,
-		pe: Double,
-		centerBody: CenterBody,
-		`location of pe`: Vector = Vector(1.0, 0.0, 0.0),
-		`velocity of pe`: Vector = Vector(0.0, 1.0, 0.0))
-		:
-		this(
-			centerBody = centerBody,
-			`semi-major axis` = (ap + pe) / 2,
-			eccentricity = if (ap === pe) 0.0 else pe * pe * `velocity of pe`.length() / centerBody.GM - 1,
-			inclination = PI / 2 - (`location of pe` % `velocity of pe`).acuteAngle(vector = Vector.Z),
-			//TODO
-			longitudeOfTheAscendingNode = 0.0)
-	
-	var `semi-major axis`: Double = `semi-major axis`
-	
-	var eccentricity: Double = eccentricity
-		/**
-		 * @param value Range of 0.0 to 1.0
-		 * @throws EccentricityOutOfRangeException
-		 */
+	var apogee: Double = apogee
 		set(value) {
-			if (value in 0.0..1.0) {
-				field = value
-			} else {
-				throw EccentricityOutOfRangeException()
-			}
+			field = value
+			checkApogeeAndPerigee()
 		}
 	
-	var inclination: Double = inclination
-		/**
-		 * @param value Range of 0 to PI/2
-		 * @throws InclinationOutOfRangeException
-		 */
+	var perigee: Double = perigee
 		set(value) {
-			if (value in 0.0..(Math.PI / 2)) {
-				field = value
-			} else {
-				throw InclinationOutOfRangeException()
-			}
+			field = value
+			checkApogeeAndPerigee()
 		}
 	
-	var longitudeOfTheAscendingNode: Double = longitudeOfTheAscendingNode
-		/**
-		 * @param value Range of -PI to PI
-		 * @throws LongitudeOfTheAscendingNodeOutOfRangeException
-		 */
-		set(value) {
-			if (value in -Math.PI..Math.PI) {
-				field = value
-			} else {
-				throw LongitudeOfTheAscendingNodeOutOfRangeException()
-			}
-		}
-	
-	var argumentOfPeriapsis: Double = argumentOfPeriapsis
-		/**
-		 * @param value Range of -PI to PI
-		 * @throwsArgumentOfPeriapsisOutOfRangeException
-		 */
-		set(value) {
-			if (value in -Math.PI..Math.PI) {
-				field = value
-			} else {
-				throw ArgumentOfPeriapsisOutOfRangeException()
-			}
-		}
-	
-	var meanAnomalyAtEpoch: Double = meanAnomalyAtEpoch
-		/**
-		 * @param value Range of 0 to PI*2
-		 * @throwsArgumentOfPeriapsisOutOfRangeException
-		 */
-		set(value) {
-			if (value in 0.0..(Math.PI * 2)) {
-				field = value
-			} else {
-				throw MeanAnomalyAtEpochOutOfRangeException()
-			}
-		}
-	
-	var apogee: Double
-		get() = `semi-major axis` * (1 + eccentricity)
-		set(value) {
-			//TODO
-		}
-	
-	var perigee: Double
-		get() = `semi-major axis` * (1 - eccentricity)
-		set(value) {
-			//TODO
-		}
-	
-	//TODO
-	var velocityOfApogee: Vector
-		get() = Vector()
+	var locationOfPe: Vector = `location of pe`
 		set(value) {}
 	
-	//TODO
-	var velocityOfPerigee: Vector
-		get() = Vector()
+	var velocityOfPerigee: Vector = `velocity of pe`
 		set(value) {}
 	
-	var e
-		get() = eccentricity
-		set(value) {
-			eccentricity = value
-		}
+	val e
+		inline get() = orbitOvalParameterE
 	
 	val orbitOvalParameterA
 		get() = (apogee + perigee) / 2
@@ -135,58 +45,117 @@ class Orbit(val centerBody: CenterBody = CenterBody(),
 		get() = sqrt(orbitOvalParameterA * orbitOvalParameterA - orbitOvalParameterB * orbitOvalParameterB)
 	
 	val orbitOvalParameterE
-		get() = eccentricity
+		get() = if (apogee == perigee) 0.0 else perigee * velocityOfPerigee.lengthSquare() / centerBody.GM - 1
 	
 	
 	val orbitOvalParameterS
-		get() = PI * orbitOvalParameterA * orbitOvalParameterA
+		get() = PI * orbitOvalParameterA * orbitOvalParameterB
 	
 	fun getHigh(range: Double): Double {
 		val e = e
 		return perigee * (1 + e) / (1 + e * cos(range))
 	}
 	
+	/**
+	 * 轨道椭圆的极坐标方程为
+	 * r = (
+	 *       ( 1 + e ) * perigee
+	 *     )/(
+	 *       1 + e * cos ( x )
+	 *     )
+	 * ，其中x为角度
+	 * 对其做不定积分，得
+	 *  -(
+	 *    (
+	 *      (2-2*e)*sin(x)^2
+	 *      +(2*e+2)*cos(x)^2
+	 *      +(4*e+4)*cos(x)
+	 *      +2*e+2)*atan(
+	 *        (
+	 *          (e-1)*sin(x)
+	 *        )/(
+	 *          sqrt(1-e)*sqrt(e+1)*(cos(x)+1)
+	 *        )
+	 *      )
+	 *      +sqrt(1-e)*sqrt(e+1)*(2*e*cos(x)
+	 *      +2*e
+	 *    )*sin(x)
+	 *  )/(
+	 *    sqrt(1-e)*sqrt(e+1)*(
+	 *      (e^3-e^2-e+1)*sin(x)^2
+	 *      +(
+	 *        (-e^3)-e^2+e+1
+	 *      )*cos(x)^2
+	 *      +(
+	 *        (-2*e^3)-2*e^2+2*e+2
+	 *      )*cos(x)
+	 *      -e^3-e^2+e+1
+	 *    )
+	 *  )
+	 *  * ( 1 + e) * ( 1 + e) * perigee * perigee / 2
+	 *
+	 *  化简得
+	 *  - perigee * perigee * sqrt(1 + e) * (
+	 *
+	 *      2 * atan(
+	 *                ( -1 + e )
+	 *                * sin(x)
+	 *                / (
+	 *                    sqrt( 1 - e * e ) * ( 1 + cos(x) )
+	 *                  )
+	 *              ) * (1 + e * cos(x) )
+	 *      + e * sqrt(1 - e * e) * sin(x)
+	 *
+	 *    ) / (
+	 *          2 * sqrt(
+	 *                    (1 - e) * (1 - e) * (1 - e)
+	 *                  ) * ( 1 + e * cos(x) )
+	 *        )
+	 *
+	 *  即为本算法所用公式
+	 */
 	fun getArea(begin: Double, end: Double): Double {
-		var t = if (end > begin) {
-			Math.ceil(end - begin / Math.PI).toInt()
+		val t = if (end > begin) {
+			ceil((end - begin) / (PI * 2)).toInt()
 		} else {
-			Math.floor(end - begin / Math.PI).toInt()
+			floor((end - begin) / (PI * 2)).toInt()
 		}
-		if (t != 0) t--
+		//if (t != 0) t--
 		
-		val pe = perigee
 		val e = e
 		val a = 2 * sqrt((1 - e) * (1 - e) * (1 - e))
 		val b = sqrt(1 + e)
 		val c = sqrt(1 - e * e)
-		val squareOfPe = pe * pe
+		val peSquare = perigee * perigee
 		
 		val cosBegin = cos(begin)
 		val sinBegin = sin(begin)
-		var areaBegin = 0.0
-		if (begin != 0.0)
-			areaBegin = -squareOfPe * b * (2 * atan(
-				((-1 + e) * sinBegin) / (c * (1 + cosBegin))
-			) * (1 + e * cosBegin) + e * c * sinBegin) / (a * (1 + e * cosBegin))
+		val areaBegin =
+			if (begin != 0.0)
+				-peSquare * b * (2 * atan(
+					(-1 + e) * sinBegin / (c * (1 + cosBegin))
+				) * (1 + e * cosBegin) + e * c * sinBegin) / (a * (1 + e * cosBegin))
+			else 0.0
 		
 		val cosEnd = cos(end)
 		val sinEnd = sin(end)
-		var areaEnd = 0.0
-		if (end != 0.0)
-			areaEnd = -squareOfPe * b * (2 * atan(
-				((-1 + e) * sinEnd) / (c * (1 + cosEnd))
-			) * (1 + e * cosEnd) + e * c * sinEnd) / (a * (1 + e * cosEnd))
-		if ((end - begin) / PI < 0)
-			areaEnd += orbitOvalParameterS
+		val areaEnd =
+			if (end != 0.0)
+				-peSquare * b * (2 * java.lang.Math.atan(
+					(-1 + e) * sinEnd / (c * (1 + cosEnd))
+				) * (1 + e * cosEnd) + e * c * sinEnd) / (a * (1 + e * cosEnd))
+			else 0.0
 		
 		return areaEnd - areaBegin + orbitOvalParameterS * t
 	}
 	
-	class EccentricityOutOfRangeException(message: String? = null) : OutOfRangeException(message)
-	class InclinationOutOfRangeException(message: String? = null) : OutOfRangeException(message)
-	class LongitudeOfTheAscendingNodeOutOfRangeException(message: String? = null) : OutOfRangeException(message)
-	class ArgumentOfPeriapsisOutOfRangeException(message: String? = null) : OutOfRangeException(message)
-	class MeanAnomalyAtEpochOutOfRangeException(message: String? = null) : OutOfRangeException(message)
+	private fun checkApogeeAndPerigee() {
+		if (apogee < perigee) {
+			val swap = apogee
+			apogee = perigee
+			perigee = swap
+		}
+	}
 	
 	companion object {
 		private fun Vector.acuteAngle(vector: Vector): Double {
