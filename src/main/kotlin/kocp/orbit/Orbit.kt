@@ -8,7 +8,7 @@ import java.lang.Math.*
 @Suppress("DEPRECATED_IDENTITY_EQUALS")
 class Orbit(apogee: Double = 0.0,
             perigee: Double = 0.0,
-            range: Double = 0.0,
+            val range: Double = 0.0,
             val centerBody: CenterBody = CenterBody(),
             `location of pe`: Vector = Vector(1.0, 0.0, 0.0),
             `velocity of pe`: Vector = Vector(0.0, 1.0, 0.0)) : Value() {
@@ -32,7 +32,10 @@ class Orbit(apogee: Double = 0.0,
 		set(value) {}
 	
 	val e
-		inline get() = orbitOvalParameterE
+		get() = orbitOvalParameterE
+	
+	val area
+		get() = PI * orbitOvalParameterA * orbitOvalParameterB
 	
 	val orbitOvalParameterA
 		get() = (apogee + perigee) / 2
@@ -49,7 +52,7 @@ class Orbit(apogee: Double = 0.0,
 	
 	
 	val orbitOvalParameterS
-		get() = PI * orbitOvalParameterA * orbitOvalParameterB
+		get() = area
 	
 	fun getHigh(range: Double): Double {
 		val e = e
@@ -116,11 +119,10 @@ class Orbit(apogee: Double = 0.0,
 	 */
 	fun getArea(begin: Double, end: Double): Double {
 		val t = if (end > begin) {
-			ceil((end - begin) / (PI * 2)).toInt()
-		} else {
 			floor((end - begin) / (PI * 2)).toInt()
+		} else {
+			ceil((end - begin) / (PI * 2)).toInt()
 		}
-		//if (t != 0) t--
 		
 		val e = e
 		val a = 2 * sqrt((1 - e) * (1 - e) * (1 - e))
@@ -134,14 +136,15 @@ class Orbit(apogee: Double = 0.0,
 			if (begin != 0.0)
 				-peSquare * b * (2 * atan(
 					(-1 + e) * sinBegin / (c * (1 + cosBegin))
-				) * (1 + e * cosBegin) + e * c * sinBegin) / (a * (1 + e * cosBegin))
+				) * (1 + e * cosBegin)
+					+ e * c * sinBegin) / (a * (1 + e * cosBegin))
 			else 0.0
 		
 		val cosEnd = cos(end)
 		val sinEnd = sin(end)
 		val areaEnd =
 			if (end != 0.0)
-				-peSquare * b * (2 * java.lang.Math.atan(
+				-peSquare * b * (2 * atan(
 					(-1 + e) * sinEnd / (c * (1 + cosEnd))
 				) * (1 + e * cosEnd) + e * c * sinEnd) / (a * (1 + e * cosEnd))
 			else 0.0
