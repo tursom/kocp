@@ -2,6 +2,7 @@ package kocp.orbit
 
 import kocp.math.HashSet
 import kocp.math.Value
+import java.lang.ref.WeakReference
 
 class CenterBody(GM: Double? = null, mass: Double? = null, radius: Double = 0.0, val name: String? = null) : Value() {
 	val GM: Double = GM ?: (mass ?: 0.0) * G
@@ -45,11 +46,27 @@ class CenterBody(GM: Double? = null, mass: Double? = null, radius: Double = 0.0,
 	companion object {
 		const val G: Double = 6.67408e-11
 
-		val centerBodyTable = HashSet<CenterBody>()
+		private val centerBodyTable = HashSet<CenterBody>()
+
+		override fun toString(): String {
+			return centerBodyTable.toString()
+		}
+
+		fun toJson(): String {
+			return centerBodyTable.toJson()
+		}
+
+		fun fromJson(json: String) {
+			HashSet.fromJson<CenterBody>(json)?.forEach {
+				centerBodyTable.add(it)
+			}
+		}
 
 		val Earth = CenterBody(mass = 5.97237e24, radius = 6.371e6, name = "Earth")
 
-		operator fun get(centerBody: CenterBody) = centerBodyTable[centerBody]
+		operator fun get(centerBody: CenterBody): CenterBody {
+			return centerBodyTable[centerBody]
+		}
 	}
 }
 
