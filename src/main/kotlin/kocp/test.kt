@@ -3,7 +3,6 @@ package kocp
 import kocp.orbit.Orbit
 import kocp.math.HashMap
 import kocp.math.HashSet
-import kocp.orbit.CenterBody
 
 val orbitTable = HashMap<String, Orbit>()
 val orbitSet = HashSet<Orbit>()

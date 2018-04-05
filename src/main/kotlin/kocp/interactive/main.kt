@@ -1,29 +1,13 @@
 package kocp.interactive
 
-import kocp.math.HashMap
 import kocp.orbit.Orbit
 import server.Interactive
-import kotlin.system.exitProcess
+import server.RandomCode
+
+val exitCode = RandomCode()
 
 val orbitMap = HashMap<String, Orbit>()
 var orbit = Orbit()
-
-val commandMap = object : HashMap<String, (ListIterator<String>) -> Unit>() {
-	init {
-		this["hey"] = { println("hello") }
-		this["exit"] = { exitProcess(0) }
-		this["show"] = {
-			when (it.hasNext()) {
-				true -> when (it.next()) {
-					"list" -> println(orbitMap)
-				}
-				false -> {
-					println(orbit)
-				}
-			}
-		}
-	}
-}
 
 val interactive = object : Interactive() {
 	override val command: (command: String) -> Unit
@@ -41,6 +25,12 @@ val interactive = object : Interactive() {
 }
 
 fun main(args: Array<String>) {
-	interactive.command("hey there and")
+	exitCode.showCode("exit code")
+	interactive.command("hey")
+	println(HashMap<String, String>(mapOf(Pair("aa", "bb"),Pair("ab", "bb"))))
+	//println(getCommandMap.toJson())
+	//println(Gson().toJson(getCommandMap))
+	//val field = Orbit::class.java.getField("perigee")
+	//println(field.get(orbit))
 	interactive.start()
 }

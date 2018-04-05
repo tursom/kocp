@@ -4,7 +4,8 @@ import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import kotlin.collections.HashMap
 
-open class HashMap<K, V> : HashMap<K, V>() {
+open class HashMap<K, V>(mapOf: Map<K, V> = mapOf()) : HashMap<K, V>(mapOf) {
+
 	fun toJson() = Gson().toJson(this) ?: "{}"
 
 	companion object {
