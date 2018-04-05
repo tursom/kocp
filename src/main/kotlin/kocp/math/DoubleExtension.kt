@@ -6,3 +6,5 @@ val Double.sin
 	inline get() = Math.sin(this)
 val Double.cos
 	inline get() = Math.cos(this)
+
+

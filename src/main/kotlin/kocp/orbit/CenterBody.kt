@@ -47,10 +47,9 @@ class CenterBody(GM: Double? = null, mass: Double? = null, radius: Double = 0.0,
 
 		val centerBodyTable = HashSet<CenterBody>()
 
-		val Earth = cachedCenterBody(mass = 5.97237e24, radius = 6.371e6, name = "Earth")
+		val Earth = CenterBody(mass = 5.97237e24, radius = 6.371e6, name = "Earth")
 
-		operator fun get(centerBody: CenterBody)
-			= centerBodyTable[centerBody]
+		operator fun get(centerBody: CenterBody) = centerBodyTable[centerBody]
 	}
 }
 

@@ -8,9 +8,12 @@ import kotlin.math.*
 class Orbit(apogee: Double = 0.0,
             perigee: Double = 0.0,
             var range: Double = 0.0,
-            var centerBody: CenterBody = Earth,
+            centerBody: CenterBody = Earth,
             `location of pe`: Vector = Vector(1.0, 0.0, 0.0),
             `velocity of pe`: Vector = Vector(0.0, 1.0, 0.0)) : Value() {
+
+	constructor(json: String) : this(Orbit.fromJson(json)!!)
+	constructor(orbit: Orbit) : this(orbit.apogee, orbit.perigee, orbit.range, orbit.centerBody, orbit.locationOfPe, orbit.velocityOfPerigee)
 
 	var apogee: Double = apogee
 		set(value) {
@@ -23,6 +26,8 @@ class Orbit(apogee: Double = 0.0,
 			field = value
 			checkApogeeAndPerigee()
 		}
+
+	val centerBody = CenterBody[centerBody]
 
 	var locationOfPe: Vector = `location of pe`
 
@@ -150,7 +155,7 @@ class Orbit(apogee: Double = 0.0,
 		return areaEnd - areaBegin + orbitOvalParameterS * t
 	}
 
-	fun toJson() = Gson().toJson(this)
+	fun toJson() = Gson().toJson(this) ?: "{}"
 
 	private fun checkApogeeAndPerigee() {
 		if (apogee < perigee) {
@@ -193,10 +198,6 @@ class Orbit(apogee: Double = 0.0,
 	}
 
 	companion object {
-		fun fromJson(json: String): Orbit? {
-			val orbit = Gson().fromJson(json, Orbit::class.java)
-			(orbit ?: return null).centerBody = CenterBody[orbit.centerBody]
-			return orbit
-		}
+		fun fromJson(json: String) = Gson().fromJson(json, Orbit::class.java) ?: null
 	}
 }

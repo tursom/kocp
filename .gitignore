@@ -9,10 +9,9 @@ gen
 kocp.iml
 将删除 .gradle/
 将删除 .idea/
-将删除 build.gradle
 将删除 build/
 将删除 gradle/
 将删除 gradlew
 将删除 gradlew.bat
-将删除 settings.gradle
-将删除 src/
+.gradle/
+build/
