@@ -52,7 +52,7 @@ class CenterBody(GM: Double? = null, mass: Double? = null, radius: Double = 0.0,
 			return centerBodyTable.toString()
 		}
 
-		val names: String
+		val names: String?
 			get() {
 				val maps = HashSet<String>()
 				centerBodyTable.forEach {
@@ -64,7 +64,7 @@ class CenterBody(GM: Double? = null, mass: Double? = null, radius: Double = 0.0,
 		val json
 			get() = this.toJson()
 
-		fun toJson(): String {
+		fun toJson(): String? {
 			return centerBodyTable.toJson()
 		}
 

@@ -25,9 +25,9 @@ fun main(args: Array<String>) {
 	exitCode.showCode("exit code")
 	interactive.command("hey")
 	println(HashMap<String, String>(mapOf(Pair("aa", "bb"), Pair("ab", "bb"))))
-	//println(getCommandMap.toJson())
-	//println(Gson().toJson(getCommandMap))
-	//val field = Orbit::class.java.getField("perigee")
-	//println(field.get(orbit))
+//	println(getCommandMap.toJson())
+//	println(Gson().toJson(getCommandMap))
+//	val field = Orbit::class.java.getField("perigee")
+//	println(field.get(orbit))
 	interactive.start()
 }
