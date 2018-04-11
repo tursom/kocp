@@ -1,8 +1,9 @@
 package kocp.interactive
 
+import com.google.gson.Gson
 import kocp.math.HashMap
 import kocp.orbit.Orbit
-import kotlin.reflect.full.memberProperties
+import java.io.File
 import kotlin.system.exitProcess
 
 val commandMap = object : HashMap<String, (ListIterator<String>) -> Unit>() {
@@ -40,47 +41,34 @@ val commandMap = object : HashMap<String, (ListIterator<String>) -> Unit>() {
 				}}")
 			})(it)
 		}
-	}
-}
-
-val orbitValuesMap = object : HashMap<String, String>() {
-	init {
-		Orbit::class.memberProperties.forEach {
-			this[it.name] = it.name
-		}
-
-	}
-}
-
-val getCommandMap = object : HashMap<String, (ListIterator<String>) -> Unit>() {
-	init {
-		this["apogee"] = { print(orbit.apogee) }
-		this["perigee"] = { print(orbit.perigee) }
-		this["velocityOfPerigee"] = { print(orbit.velocityOfPerigee) }
-		this["locationOfPe"] = { print(orbit.locationOfPe) }
-		this["value"] = { item ->
-			run {
-				when (item.hasNext()) {
-					true -> {
-						try {
-							println(Orbit::class.memberProperties.stream().filter { it.name == orbitValuesMap[item.next()] }.findAny().get().invoke(orbit))
-							//println(Orbit::class.java.getMethod("get${run {
-							//val cs = item.next().toCharArray()
-							//cs[0] = cs[0] - 32
-							//String(cs)
-							//}}").invoke(orbit))
-						} catch (e: java.lang.NoSuchMethodException) {
-							println("cant find such value")
-						} catch (e: java.util.NoSuchElementException) {
-							println("cant find such value")
+		this["save"] = {
+			if (it.hasNext()) {
+				when (it.next()) {
+					"orbit" -> {
+						if (it.hasNext()) {
+							orbitMap[it.next()] = orbit
 						}
 					}
-					false -> {
-						println("show me what you need")
+					"file" -> {
+						if (it.hasNext()) {
+							val file = File(it.next())
+							println(file.name)
+							file.createNewFile()
+							file.writeText(OrbitMember(orbit, orbitMap).toJson())
+						}
 					}
 				}
 			}
 		}
-		this["values"] = { println(orbit) }
+	}
+}
+
+class OrbitMember(val orbit: Orbit, val orbitTable: HashMap<String, Orbit>) {
+	fun toJson() = Gson().toJson(this) ?: "{}"
+}
+
+val setCommandMap = object : HashMap<String, (ListIterator<String>) -> Unit>(){
+	init {
+
 	}
 }

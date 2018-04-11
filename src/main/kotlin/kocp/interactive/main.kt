@@ -6,28 +6,25 @@ import server.RandomCode
 
 val exitCode = RandomCode()
 
-val orbitMap = HashMap<String, Orbit>()
+val orbitMap = kocp.math.HashMap<String /* orbit name */, Orbit /* orbit object */>()
 var orbit = Orbit()
 
 val interactive = object : Interactive() {
-	override val command: (command: String) -> Unit
-		get() = {
-			val commands = it.split("\\s+".toRegex())
-			val iterator = commands.listIterator()
-			iterator.forEach { item ->
-				run {
-					(commandMap[item] ?: {
-						println("cannot find command $item")
-					})(iterator)
-				}
-			}
+	override fun command(command: String) {
+		val commands = command.split("\\s+".toRegex())
+		val iterator = commands.listIterator()
+		iterator.forEach {
+			(commandMap[it] ?: {
+				println("cannot find command $it")
+			})(iterator)
 		}
+	}
 }
 
 fun main(args: Array<String>) {
 	exitCode.showCode("exit code")
 	interactive.command("hey")
-	println(HashMap<String, String>(mapOf(Pair("aa", "bb"),Pair("ab", "bb"))))
+	println(HashMap<String, String>(mapOf(Pair("aa", "bb"), Pair("ab", "bb"))))
 	//println(getCommandMap.toJson())
 	//println(Gson().toJson(getCommandMap))
 	//val field = Orbit::class.java.getField("perigee")

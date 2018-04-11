@@ -1,6 +1,9 @@
 package kocp.math
 
-open class Vector(open var x: Double = 0.0, open var y: Double = 0.0, open var z: Double = 0.0) {
+open class Vector(
+	open var x: Double = 0.0,
+	open var y: Double = 0.0,
+	open var z: Double = 0.0) {
 
 	open fun length() = Math.sqrt(x * x + y * y + z * z)
 

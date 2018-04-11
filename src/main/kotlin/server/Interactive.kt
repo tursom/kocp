@@ -4,8 +4,6 @@ open class Interactive(
 	private val indicator: String = ">>>",
 	private val cantFindCommand: String = "can't understand command") : Thread() {
 	private val input = System.`in`.bufferedReader()
-	open val command: (command: String) -> Unit
-		get() = { println("Hello $command!") }
 
 	override fun run() {
 		try {
@@ -29,6 +27,10 @@ open class Interactive(
 			e.printStackTrace()
 		}
 		whenClose()
+	}
+
+	open fun command(command: String) {
+		println("Hello $command!")
 	}
 
 	open fun whenClose() {}

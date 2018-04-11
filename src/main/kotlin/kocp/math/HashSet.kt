@@ -10,7 +10,7 @@ class HashSet<E> : HashSet<E>() {
 		return elementAt(indexOf(value))
 	}
 
-	fun toJson() = Gson().toJson(this) ?: "{}"
+	fun toJson() = Gson().toJson(this) ?: null
 
 	companion object {
 		inline fun <reified E> fromJson(json: String): HashSet<E>? {

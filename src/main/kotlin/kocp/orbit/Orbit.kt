@@ -13,7 +13,7 @@ class Orbit(apogee: Double = 0.0,
             `velocity of pe`: Vector = Vector(0.0, 1.0, 0.0)) : Value() {
 
 	constructor(json: String) : this(Orbit.fromJson(json)!!)
-	constructor(orbit: Orbit) : this(orbit.apogee, orbit.perigee, orbit.range, orbit.centerBody, orbit.locationOfPe, orbit.velocityOfPerigee)
+	constructor(orbit: Orbit) : this(orbit.apogee, orbit.perigee, orbit.range, orbit.centerBody, orbit.locationOfPerigee, orbit.velocityOfPerigee)
 
 	var apogee: Double = apogee
 		set(value) {
@@ -29,7 +29,7 @@ class Orbit(apogee: Double = 0.0,
 
 	val centerBody = CenterBody[centerBody]
 
-	var locationOfPe: Vector = `location of pe`
+	var locationOfPerigee: Vector = `location of pe`
 
 	var velocityOfPerigee: Vector = `velocity of pe`
 
@@ -163,12 +163,12 @@ class Orbit(apogee: Double = 0.0,
 			apogee = perigee
 			perigee = swap
 			velocityOfPerigee.negative()
-			locationOfPe.negative()
+			locationOfPerigee.negative()
 		}
 	}
 
 	override fun toString(): String {
-		return "Orbit(range=$range, centerBody=$centerBody, apogee=$apogee, perigee=$perigee, locationOfPe=$locationOfPe, velocityOfPerigee=$velocityOfPerigee)"
+		return "Orbit(range=$range, centerBody=$centerBody, apogee=$apogee, perigee=$perigee, locationOfPerigee=$locationOfPerigee, velocityOfPerigee=$velocityOfPerigee)"
 	}
 
 	override fun equals(other: Any?): Boolean {
@@ -181,7 +181,7 @@ class Orbit(apogee: Double = 0.0,
 		if (centerBody != other.centerBody) return false
 		if (apogee != other.apogee) return false
 		if (perigee != other.perigee) return false
-		if (locationOfPe != other.locationOfPe) return false
+		if (locationOfPerigee != other.locationOfPerigee) return false
 		if (velocityOfPerigee != other.velocityOfPerigee) return false
 
 		return true
@@ -192,7 +192,7 @@ class Orbit(apogee: Double = 0.0,
 		result = 31 * result + centerBody.hashCode()
 		result = 31 * result + apogee.hashCode()
 		result = 31 * result + perigee.hashCode()
-		result = 31 * result + locationOfPe.hashCode()
+		result = 31 * result + locationOfPerigee.hashCode()
 		result = 31 * result + velocityOfPerigee.hashCode()
 		return result
 	}
