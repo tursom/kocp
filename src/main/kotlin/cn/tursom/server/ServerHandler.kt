@@ -1,4 +1,4 @@
-package server
+package cn.tursom.server
 
 import java.net.Socket
 
@@ -99,7 +99,7 @@ abstract class ServerHandler(val socket: Socket?) : Runnable {
 	
 	companion object Companion {
 		const val debug: Boolean = true
-		val serverError = "server error".toByteArray()
+		val serverError = "cn.tursom.server error".toByteArray()
 	}
 	
 }

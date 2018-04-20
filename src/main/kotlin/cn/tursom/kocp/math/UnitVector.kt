@@ -1,4 +1,4 @@
-package kocp.math
+package cn.tursom.kocp.math
 
 class UnitVector(x: Double, y: Double, z: Double) : Vector(x, y, z) {
 	init {

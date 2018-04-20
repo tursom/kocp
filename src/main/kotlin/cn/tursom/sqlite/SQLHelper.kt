@@ -1,4 +1,4 @@
-package database.sqlite
+package cn.tursom.sqlite
 
 import java.sql.Connection
 import java.sql.DriverManager

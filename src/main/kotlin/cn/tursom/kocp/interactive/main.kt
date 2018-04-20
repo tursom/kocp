@@ -1,12 +1,12 @@
-package kocp.interactive
+package cn.tursom.kocp.interactive
 
-import kocp.orbit.Orbit
-import server.Interactive
-import server.RandomCode
+import cn.tursom.kocp.orbit.Orbit
+import cn.tursom.server.Interactive
+import cn.tursom.server.RandomCode
 
 val exitCode = RandomCode()
 
-val orbitMap = kocp.math.HashMap<String /* orbit name */, Orbit /* orbit object */>()
+val orbitMap = cn.tursom.kocp.math.HashMap<String /* orbit name */, Orbit /* orbit object */>()
 var orbit = Orbit()
 
 val interactive = object : Interactive() {

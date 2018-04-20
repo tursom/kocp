@@ -1,4 +1,4 @@
-package kocp.math
+package cn.tursom.kocp.math
 
 val Double.square
 	inline get() = this * this

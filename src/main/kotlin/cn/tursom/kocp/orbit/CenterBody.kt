@@ -1,8 +1,7 @@
-package kocp.orbit
+package cn.tursom.kocp.orbit
 
-import kocp.math.HashSet
-import kocp.math.Value
-import java.lang.ref.WeakReference
+import cn.tursom.kocp.math.HashSet
+import cn.tursom.kocp.math.Value
 
 class CenterBody(GM: Double? = null, mass: Double? = null, radius: Double = 0.0, val name: String? = null) : Value() {
 	val GM: Double = GM ?: (mass ?: 0.0) * G

@@ -1,4 +1,4 @@
-package kocp.math
+package cn.tursom.kocp.math
 
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
@@ -16,7 +16,7 @@ class HashSet<E> : HashSet<E>() {
 		inline fun <reified E> fromJson(json: String): HashSet<E>? {
 			val hashSet = HashSet<E>()
 			return try {
-				Gson().fromJson(json, kocp.math.HashSet::class.java).forEach {
+				Gson().fromJson(json, cn.tursom.kocp.math.HashSet::class.java).forEach {
 					hashSet.add(Gson().fromJson(it.toString(), E::class.java))
 				}
 				hashSet

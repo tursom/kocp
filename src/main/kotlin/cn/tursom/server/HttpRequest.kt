@@ -1,4 +1,4 @@
-package server
+package cn.tursom.server
 
 import java.io.BufferedReader
 import java.io.IOException

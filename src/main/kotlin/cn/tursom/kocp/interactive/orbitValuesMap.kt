@@ -1,7 +1,7 @@
-package kocp.interactive
+package cn.tursom.kocp.interactive
 
-import kocp.math.HashMap
-import kocp.orbit.Orbit
+import cn.tursom.kocp.math.HashMap
+import cn.tursom.kocp.orbit.Orbit
 import kotlin.reflect.full.memberProperties
 
 val orbitValuesMap = object : HashMap<String, String>() {

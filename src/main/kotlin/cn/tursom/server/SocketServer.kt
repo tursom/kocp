@@ -1,4 +1,4 @@
-package server
+package cn.tursom.server
 
 import java.io.IOException
 import java.net.ServerSocket
@@ -35,7 +35,7 @@ open class SocketServer(
 				pool.execute(handler)
 			} catch (e: IOException) {
 				if (pool.isShutdown || serverSocket.isClosed) {
-					System.err.println("server closed")
+					System.err.println("cn.tursom.server closed")
 					break
 				}
 				e.printStackTrace()
@@ -50,7 +50,7 @@ open class SocketServer(
 		}
 		whenClose()
 		close()
-		System.err.println("server closed")
+		System.err.println("cn.tursom.server closed")
 	}
 	
 	open val handler: Runnable
@@ -77,7 +77,7 @@ open class SocketServer(
 	}
 	
 	open val poolIsFull
-		get() = "server pool is full".toByteArray()
+		get() = "cn.tursom.server pool is full".toByteArray()
 	
 	companion object {
 		val cpuNumber = Runtime.getRuntime().availableProcessors()

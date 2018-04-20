@@ -1,8 +1,8 @@
-package kocp.orbit
+package cn.tursom.kocp.orbit
 
 import com.google.gson.Gson
-import kocp.math.*
-import kocp.orbit.CenterBody.Companion.Earth
+import cn.tursom.kocp.math.*
+import cn.tursom.kocp.orbit.CenterBody.Companion.Earth
 import kotlin.math.*
 
 class Orbit(apogee: Double = 0.0,

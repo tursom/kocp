@@ -1,4 +1,4 @@
-package kocp.math
+package cn.tursom.kocp.math
 
 open class Value {
 	open class OutOfRangeException(message: String? = null) : Exception(message)

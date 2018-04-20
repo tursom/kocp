@@ -1,4 +1,4 @@
-package server
+package cn.tursom.server
 
 import java.lang.Thread.sleep
 import java.util.concurrent.LinkedBlockingQueue

@@ -1,4 +1,4 @@
-package server
+package cn.tursom.server
 
 open class Interactive(
 	private val indicator: String = ">>>",
