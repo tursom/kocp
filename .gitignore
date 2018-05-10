@@ -6,7 +6,6 @@
 .idea
 out
 gen
-cn.tursom.kocp.iml
 将删除 .gradle/
 将删除 .idea/
 将删除 build/
@@ -18,3 +17,5 @@ build/
 src/main/java/
 src/main/resources/
 src/test/
+gradle/
+kocp.iml
