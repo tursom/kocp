@@ -3,7 +3,8 @@ package cn.tursom.kocp.math
 open class Vector(
 	open var x: Double = 0.0,
 	open var y: Double = 0.0,
-	open var z: Double = 0.0) {
+	open var z: Double = 0.0)
+	: Value() {
 
 	open fun length() = Math.sqrt(x * x + y * y + z * z)
 
@@ -21,9 +22,7 @@ open class Vector(
 		z = -z
 	}
 
-	operator fun unaryMinus(): Vector {
-		return Vector(-x, -y, -z)
-	}
+	operator fun unaryMinus() = Vector(-x, -y, -z)
 
 	operator fun plus(vector: Vector) = Vector(
 		x = x + vector.x,
@@ -35,7 +34,8 @@ open class Vector(
 		y = y - vector.y,
 		z = z - vector.z)
 
-	operator fun times(vector: Vector) = x * vector.x + y * vector.y + z * vector.z
+	operator fun times(vector: Vector) =
+		x * vector.x + y * vector.y + z * vector.z
 
 	operator fun rem(vector: Vector) = Vector(
 		x = y * vector.z - z * vector.y,
@@ -52,7 +52,8 @@ open class Vector(
 		y = y / value,
 		z = z / value)
 
-	operator fun rangeTo(vector: Vector) = Math.acos((this * vector) / (this.length() * vector.length()))
+	operator fun rangeTo(vector: Vector) =
+		Math.acos((this * vector) / (this.length() * vector.length()))
 
 	open operator fun plusAssign(vector: Vector) {
 		x += vector.x
@@ -78,9 +79,7 @@ open class Vector(
 		z /= value
 	}
 
-	override fun toString(): String {
-		return "Vector(x=$x, y=$y, z=$z)"
-	}
+	override fun toString() = "Vector(x=$x, y=$y, z=$z)"
 
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
@@ -106,12 +105,4 @@ open class Vector(
 		return result
 	}
 
-	companion object {
-		val X
-			get() = UnitVector(1.0, 0.0, 0.0)
-		val Y
-			get() = UnitVector(0.0, 1.0, 0.0)
-		val Z
-			get() = UnitVector(0.0, 0.0, 1.0)
-	}
 }

@@ -56,7 +56,14 @@ class UnitVector(x: Double, y: Double, z: Double) : Vector(x, y, z) {
 		super.z /= length
 	}
 
-	override fun toString(): String {
-		return "Unit${super.toString()}"
+	override fun toString() = "Unit${super.toString()}"
+
+	companion object {
+		val X
+			get() = UnitVector(1.0, 0.0, 0.0)
+		val Y
+			get() = UnitVector(0.0, 1.0, 0.0)
+		val Z
+			get() = UnitVector(0.0, 0.0, 1.0)
 	}
 }
