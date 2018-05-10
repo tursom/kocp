@@ -175,7 +175,7 @@ class Orbit(apogee: Double = 0.0,
 	 *      + e * sqrt(1 - e * e) * sin(x)
 	 *
 	 *    ) / (
-	 *      2 * pow((1 - e), 1.5) * ( 1 + e * cos(x) )
+	 *      2 * (1 - e) ^ 1.5 * ( 1 + e * cos(x) )
 	 *    )
 	 *
 	 *  即为本算法所用公式
