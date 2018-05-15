@@ -3,8 +3,8 @@ package cn.tursom.kocp.math
 open class Vector(
 	open var x: Double = 0.0,
 	open var y: Double = 0.0,
-	open var z: Double = 0.0)
-	: Value() {
+	open var z: Double = 0.0
+) : Value() {
 
 	open fun length() = Math.sqrt(x * x + y * y + z * z)
 
@@ -13,7 +13,7 @@ open class Vector(
 	val unit: UnitVector
 		get() {
 			val length = length()
-			return UnitVector(x / length, y / length, z / length)
+			return UnitVector(x = x / length, y = y / length, z = z / length)
 		}
 
 	fun negative() {
@@ -24,33 +24,41 @@ open class Vector(
 
 	operator fun unaryMinus() = Vector(-x, -y, -z)
 
-	operator fun plus(vector: Vector) = Vector(
-		x = x + vector.x,
-		y = y + vector.y,
-		z = z + vector.z)
+	operator fun plus(vector: Vector) =
+		Vector(
+			x = x + vector.x,
+			y = y + vector.y,
+			z = z + vector.z
+		)
 
-	operator fun minus(vector: Vector) = Vector(
-		x = x - vector.x,
-		y = y - vector.y,
-		z = z - vector.z)
+	operator fun minus(vector: Vector) =
+		Vector(
+			x = x - vector.x,
+			y = y - vector.y,
+			z = z - vector.z
+		)
 
 	operator fun times(vector: Vector) =
 		x * vector.x + y * vector.y + z * vector.z
 
-	operator fun rem(vector: Vector) = Vector(
-		x = y * vector.z - z * vector.y,
-		y = z * vector.x - x * vector.z,
-		z = x * vector.y - y * vector.x)
+	operator fun rem(vector: Vector) =
+		Vector(
+			x = y * vector.z - z * vector.y,
+			y = z * vector.x - x * vector.z,
+			z = x * vector.y - y * vector.x
+		)
 
 	operator fun times(value: Double) = Vector(
 		x = x * value,
 		y = y * value,
 		z = z * value)
 
-	operator fun div(value: Double) = Vector(
-		x = x / value,
-		y = y / value,
-		z = z / value)
+	operator fun div(value: Double) =
+		Vector(
+			x = x / value,
+			y = y / value,
+			z = z / value
+		)
 
 	operator fun rangeTo(vector: Vector) =
 		Math.acos((this * vector) / (this.length() * vector.length()))
