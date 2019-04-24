@@ -26,7 +26,8 @@ class Orbit(
 		orbit.range,
 		orbit.centerBody,
 		orbit.locationOfPerigee,
-		orbit.velocityOfPerigee)
+		orbit.velocityOfPerigee
+	)
 	
 	/**
 	 * 远地点高度（地心起算）
