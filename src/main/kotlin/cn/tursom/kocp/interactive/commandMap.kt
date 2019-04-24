@@ -1,7 +1,6 @@
 package cn.tursom.kocp.interactive
 
 import com.google.gson.Gson
-import cn.tursom.kocp.math.HashMap
 import cn.tursom.kocp.orbit.Orbit
 import java.io.File
 import kotlin.system.exitProcess
@@ -35,7 +34,7 @@ val commandMap = object : HashMap<String, (ListIterator<String>) -> Unit>() {
 		}
 		this["get"] = {
 			(getCommandMap[it.next()] ?: {
-				println("cannot find command ${kotlin.run {
+				println("cannot find command ${run {
 					it.previous()
 					it.next()
 				}}")

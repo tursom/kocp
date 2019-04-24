@@ -6,7 +6,7 @@ import cn.tursom.server.RandomCode
 
 val exitCode = RandomCode()
 
-val orbitMap = cn.tursom.kocp.math.HashMap<String /* orbit name */, Orbit /* orbit object */>()
+val orbitMap = HashMap<String /* orbit name */, Orbit /* orbit object */>()
 var orbit = Orbit()
 
 val interactive = object : Interactive() {
