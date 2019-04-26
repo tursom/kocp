@@ -1,13 +1,13 @@
 package cn.tursom.kocp.interactive
 
 import com.google.gson.Gson
-import cn.tursom.kocp.orbit.Orbit
+import cn.tursom.kocp.orbit.OvalOrbit
 import java.io.File
 import kotlin.system.exitProcess
 
 val commandMap = object : HashMap<String, (ListIterator<String>) -> Unit>() {
 	init {
-		this["hey"] = { println("Welcome to use Tursom K. Ulefit's Kotlin Orbit Calc System") }
+		this["hey"] = { println("Welcome to use Tursom K. Ulefit's Kotlin OvalOrbit Calc System") }
 		this["exit"] = {
 			when (it.hasNext()) {
 				true -> when (it.next()) {
@@ -62,7 +62,7 @@ val commandMap = object : HashMap<String, (ListIterator<String>) -> Unit>() {
 	}
 }
 
-class OrbitMember(val orbit: Orbit, val orbitTable: HashMap<String, Orbit>) {
+class OrbitMember(val orbit: OvalOrbit, val orbitTable: HashMap<String, OvalOrbit>) {
 	fun toJson() = Gson().toJson(this) ?: "{}"
 }
 

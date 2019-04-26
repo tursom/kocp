@@ -19,16 +19,30 @@ open class Vector(
 	
 	operator fun unaryMinus() = Vector(-x, -y, -z)
 	
+	operator fun unaryPlus() = this
+	
 	infix operator fun plus(vector: Vector) = Vector(
 		x = x + vector.x,
 		y = y + vector.y,
 		z = z + vector.z
 	)
 	
+	infix operator fun plus(vector: Double) = Vector(
+		x = x + vector,
+		y = y + vector,
+		z = z + vector
+	)
+	
 	infix operator fun minus(vector: Vector) = Vector(
 		x = x - vector.x,
 		y = y - vector.y,
 		z = z - vector.z
+	)
+	
+	infix operator fun minus(vector: Double) = Vector(
+		x = x - vector,
+		y = y - vector,
+		z = z - vector
 	)
 	
 	infix operator fun times(vector: Vector) = x * vector.x + y * vector.y + z * vector.z
@@ -42,6 +56,12 @@ open class Vector(
 		x = y * vector.z - z * vector.y,
 		y = z * vector.x - x * vector.z,
 		z = x * vector.y - y * vector.x
+	)
+	
+	infix operator fun rem(vector: Double) = Vector(
+		x = x % vector,
+		y = y % vector,
+		z = z % vector
 	)
 	
 	infix operator fun div(value: Double) = Vector(

@@ -1,7 +1,8 @@
 package cn.tursom.kocp.interactive
 
-import cn.tursom.kocp.orbit.CenterBody
-import cn.tursom.kocp.orbit.Orbit
+import cn.tursom.kocp.body.CenterBody
+import cn.tursom.kocp.math.toJson
+import cn.tursom.kocp.orbit.OvalOrbit
 import com.google.gson.Gson
 import kotlin.reflect.full.memberProperties
 
@@ -18,7 +19,7 @@ val getCommandMap = object : HashMap<String, (ListIterator<String>) -> Unit>() {
 						var command: String? = null
 						try {
 							command = orbitValuesMap[item.next()]
-							println(Orbit::class.memberProperties.stream().filter { it.name == command }.findAny().get().invoke(orbit))
+							println(OvalOrbit::class.memberProperties.stream().filter { it.name == command }.findAny().get().invoke(orbit))
 						} catch (e: NoSuchMethodException) {
 							println("cant find such value: $command}")
 						} catch (e: java.util.NoSuchElementException) {
@@ -38,7 +39,7 @@ val getCommandMap = object : HashMap<String, (ListIterator<String>) -> Unit>() {
 		}
 		this["orbits"] = { println(Gson().toJson(orbitMap.keys)) }
 		this["orbitsJson"] = { println(Gson().toJson(orbitMap)) }
-		this["centerBodys"] = { println(CenterBody.names) }
-		this["centerBodysJson"] = { println(CenterBody.json) }
+		this["centerBodys"] = { println(CenterBody.set) }
+		this["centerBodysJson"] = { println(CenterBody.set.toJson()) }
 	}
 }

@@ -5,17 +5,6 @@
 # IntelliJ project files
 .idea
 out
-gen
-将删除 .gradle/
-将删除 .idea/
-将删除 build/
-将删除 gradle/
-将删除 gradlew
-将删除 gradlew.bat
 .gradle/
 build/
-src/main/java/
-src/main/resources/
-src/test/
 gradle/
-kocp.iml
