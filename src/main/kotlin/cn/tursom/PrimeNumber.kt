@@ -22,7 +22,7 @@ object PrimeNumber : Iterable<Long> {
 				iterator(sqrt(num.toDouble()).toInt()).forEach {
 					if (num % it == 0L) return@run false
 				}
-				false
+				true
 			}
 		}
 	}
