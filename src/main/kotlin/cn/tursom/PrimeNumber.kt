@@ -64,20 +64,3 @@ object PrimeNumber : Iterable<Long> {
 		}
 	}
 }
-
-fun time(action: () -> Unit): Long {
-	val t1 = System.currentTimeMillis()
-	action()
-	val t2 = System.currentTimeMillis()
-	return t2 - t1
-}
-
-fun main() {
-	println(9223372036854775807.javaClass)
-	println(time { println(PrimeNumber[1000000000000000001]) })
-	println(time { println(PrimeNumber[1999999999]) })
-//	PrimeNumber.iterator(100000000).forEach {
-//		print("$it ")
-//	}
-//	println()
-}
