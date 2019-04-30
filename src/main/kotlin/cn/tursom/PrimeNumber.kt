@@ -1,7 +1,6 @@
 package cn.tursom
 
-import java.lang.Math.sqrt
-
+import kotlin.math.sqrt
 
 object PrimeNumber : Iterable<Long> {
 	private val bitSet = BitSet(defalutState = true)
@@ -15,8 +14,16 @@ object PrimeNumber : Iterable<Long> {
 		num == 2L -> true
 		num and 1L != 1L -> false
 		else -> {
-			check(num)
-			bitSet[num shr 1]
+			if (num < 1000000000) {
+				check(num)
+				bitSet[num shr 1]
+			} else run {
+				check(1000000000)
+				iterator(sqrt(num.toDouble()).toInt()).forEach {
+					if (num % it == 0L) return@run false
+				}
+				false
+			}
 		}
 	}
 	
@@ -67,7 +74,7 @@ fun time(action: () -> Unit): Long {
 
 fun main() {
 	println(9223372036854775807.javaClass)
-	println(time { println(PrimeNumber[1]) })
+	println(time { println(PrimeNumber[1000000000000000001]) })
 	println(time { println(PrimeNumber[1999999999]) })
 //	PrimeNumber.iterator(100000000).forEach {
 //		print("$it ")
