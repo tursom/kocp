@@ -8,10 +8,10 @@ class BitSetTest {
 		val bitSet = BitSet()
 		bitSet.up(1)
 		bitSet.down(2)
-		println(bitSet[0])
-		println(bitSet[1])
-		println(bitSet[2])
-		println(bitSet[1000])
-		println(bitSet.size)
+		assert(!bitSet[0])
+		assert(bitSet[1])
+		assert(!bitSet[2])
+		assert(!bitSet[1000])
+		assert(bitSet.size == 1023L)
 	}
 }
