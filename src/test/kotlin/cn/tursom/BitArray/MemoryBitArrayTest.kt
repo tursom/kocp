@@ -1,11 +1,12 @@
-package cn.tursom
+package cn.tursom.BitArray
 
+import cn.tursom.bitarray.MemoryBitArray
 import org.junit.Test
 
-class BitSetTest {
+class MemoryBitArrayTest {
 	@Test
 	fun testBitSet() {
-		val bitSet = BitArray()
+		val bitSet = MemoryBitArray()
 		bitSet.up(1)
 		bitSet.down(2)
 		assert(!bitSet[0])
