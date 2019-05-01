@@ -5,7 +5,7 @@ import org.junit.Test
 class BitSetTest {
 	@Test
 	fun testBitSet() {
-		val bitSet = BitSet()
+		val bitSet = BitArray()
 		bitSet.up(1)
 		bitSet.down(2)
 		assert(!bitSet[0])

@@ -1,15 +1,18 @@
 package cn.tursom
 
-class BitSet(
+/**
+ * 非自动扩容的可设置默认值的BitSet
+ */
+class BitArray(
 	maxIndex: Long = -1,
-	@Suppress("MemberVisibilityCanBePrivate") val defalutState: Boolean = false
+	@Suppress("MemberVisibilityCanBePrivate") val defaultState: Boolean = false
 ) {
 	private var bitSet = IntArray(needSize(maxIndex).toInt())
 	val size
 		get() = (bitSet.size.toLong() shl 5) - 1
 	
 	init {
-		val default = if (defalutState) -1 else 0
+		val default = if (defaultState) -1 else 0
 		for (i in 0 until bitSet.size) {
 			bitSet[i] = default
 		}
@@ -42,17 +45,17 @@ class BitSet(
 	
 	private fun check(index: Long) {
 		if (index < 0) throw IndexOutOfBoundsException("bitIndex < 0: $index")
-		if (index > size) resize(index)
+		if (index > size) throw IndexOutOfBoundsException("bitIndex > maxSize: $index, $size")
 	}
 	
 	fun resize(maxIndex: Long = 0): Boolean = synchronized(this) {
 		if (maxIndex <= size) return false
 		
-		val newSet = IntArray(max(needSize(maxIndex).toInt(), bitSet.size * 2))
+		val newSet = IntArray(needSize(maxIndex).toInt())
 		
 		bitSet.copyInto(newSet)
 		
-		val default = if (defalutState) -1 else 0
+		val default = if (defaultState) -1 else 0
 		for (i in bitSet.size until newSet.size) {
 			newSet[i] = default
 		}
@@ -64,8 +67,5 @@ class BitSet(
 	companion object {
 		@JvmStatic
 		fun needSize(maxIndex: Long) = ((maxIndex shr 5) + 1) and 0x1fffffffffffffff
-		
-		@JvmStatic
-		fun max(a: Int, b: Int) = if (a > b) a else b
 	}
 }

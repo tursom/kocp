@@ -3,11 +3,7 @@ package cn.tursom
 import kotlin.math.sqrt
 
 object PrimeNumber : Iterable<Long> {
-	private val bitSet = BitSet(defalutState = true)
-	
-	init {
-		reCalc()
-	}
+	private val bitSet = BitArray(defaultState = true)
 	
 	operator fun get(num: Long) = when {
 		num < 2L -> false
@@ -27,11 +23,15 @@ object PrimeNumber : Iterable<Long> {
 		}
 	}
 	
+	operator fun get(num: Int) = get(num.toLong())
+	
 	private fun check(num: Long) {
-		if (num >= bitSet.size * 2 && bitSet.resize(num shr 1)) {
+		if (num >= bitSet.size * 2 && bitSet.resize(max(num shr 1, (bitSet.size * 1.5).toLong()))) {
 			reCalc()
 		}
 	}
+	
+	private fun max(a: Long, b: Long) = if (a > b) a else b
 	
 	private fun reCalc() = synchronized(this) {
 		val sqrtMaxNumber = sqrt((bitSet.size * 2 + 1).toDouble()).toLong() + 1
