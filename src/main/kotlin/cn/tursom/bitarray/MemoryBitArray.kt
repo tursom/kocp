@@ -31,18 +31,18 @@ class MemoryBitArray(
 	}
 	
 	override operator fun get(index: Long): Boolean {
-		check(index)
+//		check(index)
 		return bitSet[(index shr 6).toInt()] and ((1L shl ((index and 63).toInt()))) != 0L
 	}
 	
 	override fun up(index: Long) {
-		check(index)
+//		check(index)
 		val arrayIndex = (index ushr 6).toInt()
 		bitSet[arrayIndex] = bitSet[arrayIndex] or (1L shl (index and 63).toInt())
 	}
 	
 	override fun down(index: Long) {
-		check(index)
+//		check(index)
 		val arrayIndex = (index ushr 6).toInt()
 		bitSet[arrayIndex] = bitSet[arrayIndex] and (1L shl (index and 63).toInt()).inv()
 	}

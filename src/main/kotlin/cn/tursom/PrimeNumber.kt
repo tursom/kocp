@@ -38,6 +38,58 @@ object PrimeNumber : Iterable<Long> {
 		bitSet.load(inputStream)
 	}
 	
+	fun calc(num: Long) {
+		check(num)
+	}
+	
+	fun forEach(action: (num: Long) -> Unit) {
+		action(2)
+		for (i in 3..checkedNumber step 2) {
+			if (get(i)) action(i)
+		}
+	}
+	
+	fun getUntil(max: Long, action: (num: Long) -> Unit) {
+		if (max < 2) return
+		action(2)
+		for (i in 3..max step 2) {
+			if (get(i)) action(i)
+		}
+	}
+	
+	fun getUntilEx(max: Long, action: (num: Long) -> Boolean) {
+		if (max < 2) return
+		if (!action(2)) return
+		for (i in 3..max) {
+			if (get(i) && !action(i)) return
+		}
+	}
+	
+	private fun doubleDecomposition(num: Long): Pair<Long, Long> {
+		var ret = Pair(1L, num)
+		getUntilEx(sqrt(num.toDouble()).toLong()) {
+			if (num % it == 0L) {
+				ret = Pair(it, num / it)
+				return@getUntilEx false
+			}
+			return@getUntilEx true
+		}
+		return ret
+	}
+	
+	fun decomposition(num: Long): LongArray {
+		val ret = ArrayList<Long>()
+		var (a, b) = doubleDecomposition(num)
+		while (a != 1L) {
+			ret.add(a)
+			val (a2, b2) = doubleDecomposition(b)
+			a = a2
+			b = b2
+		}
+		ret.add(b)
+		return ret.toLongArray()
+	}
+	
 	override fun toString(): String {
 //		return "PrimeNumber(checked number=${bitSet.size * 2}, used memory=${bitSet.usedSizeStr})"
 		return "PrimeNumber(checked number=$checkedNumber)"
@@ -57,12 +109,13 @@ object PrimeNumber : Iterable<Long> {
 	private fun min(a: Long) = if (a > this.biggestNumber) this.biggestNumber else a
 	
 	private fun reCalc() = synchronized(this) {
-		val sqrtMaxNumber = sqrt(checkedNumber.toDouble()).toLong() + 1
+		val sqrtMaxNumber = sqrt(checkedNumber.toDouble()).toLong() shr 1
 		bitSet.down(0)
-		for (i in 3..sqrtMaxNumber step 2) {
-			if (bitSet[i shr 1]) {
-				for (j in (i * 3)..checkedNumber step (i * 2)) {
-					bitSet.down(j shr 1)
+		for (i in 1..sqrtMaxNumber) {
+			if (bitSet[i]) {
+				val doubleI = i * 2 + 1
+				for (j in ((doubleI * doubleI) shr 1)..bitSet.size step doubleI) {
+					bitSet.down(j)
 				}
 			}
 		}
