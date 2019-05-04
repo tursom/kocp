@@ -14,7 +14,7 @@ class FileBitArray(
 	private val cache = IntArray(256)
 	private var cacheIndex = -1L
 	private var cacheSize = (randomAccessFile.length() - 1) / 1024 + 1
-	override val size
+	override val maxIndex
 		get() = randomAccessFile.length() * 8 - 1
 	
 	override fun get(index: Long): Boolean {
@@ -57,11 +57,11 @@ class FileBitArray(
 	}
 	
 	override fun resize(maxIndex: Long): Boolean {
-		if (maxIndex <= size) return false
+		if (maxIndex <= this.maxIndex) return false
 		FileOutputStream(File(fileName), true).use {
 			val byte = (if (defaultState) 0xff else 0x00).toByte()
 			val byteArray = ByteArray(1024) { byte }
-			val newCacheSize = (maxIndex - size - 1) / 1024 / 32 + 1
+			val newCacheSize = (maxIndex - this.maxIndex - 1) / 1024 / 32 + 1
 			for (i in 0 until newCacheSize) {
 				it.write(byteArray)
 				cacheSize++
@@ -96,7 +96,7 @@ class FileBitArray(
 	
 	private fun check(index: Long) {
 		if (index < 0) throw IndexOutOfBoundsException("bitIndex < 0: $index")
-		if (index > size) throw IndexOutOfBoundsException("bitIndex > maxSize: $index, $size")
+		if (index > maxIndex) throw IndexOutOfBoundsException("bitIndex > maxSize: $index, $maxIndex")
 		val cacheIndex = (index shr 15)
 		if (this.cacheIndex != cacheIndex) loadCache(cacheIndex)
 	}

@@ -7,16 +7,15 @@ import kotlin.math.sqrt
 class PrimeNumberTest {
 	@Test
 	fun testPrimeNumber() {
-		println(PrimeNumber)
 		println(PrimeNumber.biggestNumber)
+		println(PrimeNumber.biggestNumber shr 4)
 		PrimeNumber.calc(10000)
+		println(PrimeNumber)
 		println()
 		assert(PrimeNumber[997])
 		assert(!PrimeNumber[999])
-		for (i in 1..10000) {
-			if (PrimeNumber[i]) print("$i ")
-		}
-		println(PrimeNumber)
+		PrimeNumber.untilIterator(10000).forEach { print("$it ") }
+		println()
 	}
 
 	@Test
@@ -56,6 +55,15 @@ class PrimeNumberTest {
 		println(time {
 			PrimeNumber.calc(20_0000_0000)
 		})
+		println(PrimeNumber)
+	}
+
+
+	@Test
+	fun testBigNumber() {
+		println("using time: ${time {
+			println(PrimeNumber[1000000000000001])
+		}}")
 	}
 
 	fun time(action: () -> Unit): Long {

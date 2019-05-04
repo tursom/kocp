@@ -7,7 +7,7 @@ class FileReaderBitArray(
 ) : ReadableBitArray {
 	private val randomAccessFile = RandomAccessFile(fileName, "r")
 	
-	override val size: Long
+	override val maxIndex: Long
 		get() = randomAccessFile.length() * 8 - 1
 	
 	override fun get(index: Long): Boolean {

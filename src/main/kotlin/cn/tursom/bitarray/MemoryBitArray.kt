@@ -10,7 +10,7 @@ class MemoryBitArray(
 	override val defaultState: Boolean = false
 ) : BitArray {
 	private var bitSet = LongArray(needSize(maxIndex))
-	override val size
+	override val maxIndex
 		get() = (bitSet.size.toLong() shl 6) - 1
 	val usedSize
 		get() = bitSet.size * 8
@@ -21,6 +21,12 @@ class MemoryBitArray(
 			val kb = (memory / 1024) % 1024
 			val mb = (memory / 1024 / 1024) % 1024
 			return "${if (mb != 0) "$mb MB " else ""}${if (kb != 0) "$kb KB " else ""} $b Byte"
+		}
+	val trueCount: Long
+		get() {
+			var count = 0L
+			bitSet.forEach { count += it.bitCount }
+			return count
 		}
 
 	init {
@@ -61,11 +67,11 @@ class MemoryBitArray(
 
 	private fun check(index: Long) {
 		if (index < 0) throw IndexOutOfBoundsException("bitIndex < 0: $index")
-		if (index > size) throw IndexOutOfBoundsException("bitIndex > maxSize: $index, $size")
+		if (index > maxIndex) throw IndexOutOfBoundsException("bitIndex > maxSize: $index, $maxIndex")
 	}
 
 	override fun resize(maxIndex: Long): Boolean = synchronized(this) {
-		if (maxIndex <= size) return false
+		if (maxIndex <= this.maxIndex) return false
 
 		val newSet = LongArray(needSize(maxIndex).toInt())
 
@@ -110,6 +116,8 @@ class MemoryBitArray(
 		return newBitArray
 	}
 
+	override fun toString() = "MemoryBitArray(max index=$maxIndex, true count=$trueCount, used memory=$usedSizeStr)"
+
 	companion object {
 		@JvmStatic
 		fun needSize(maxIndex: Long) = (((maxIndex shr 6) + 1) and 0xffffffff).toInt()
@@ -134,5 +142,30 @@ class MemoryBitArray(
 		)
 
 		private val setArr = LongArray(64) { getArr[it].inv() }
+
+		private val bitCountArray = longArrayOf(
+			0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4,
+			1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
+			1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
+			2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
+			1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
+			2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
+			2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
+			3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
+			1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
+			2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
+			2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
+			3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
+			2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
+			3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
+			3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
+			4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8
+		)
+
+		private val Long.bitCount
+			get() = bitCountArray[toInt().and(0xff)] + bitCountArray[shr(8).toInt().and(0xff)] +
+				bitCountArray[shr(16).toInt().and(0xff)] + bitCountArray[shr(24).toInt().and(0xff)] +
+				bitCountArray[shr(32).toInt().and(0xff)] + bitCountArray[shr(40).toInt().and(0xff)] +
+				bitCountArray[shr(48).toInt().and(0xff)] + bitCountArray[shr(56).toInt().and(0xff)]
 	}
 }

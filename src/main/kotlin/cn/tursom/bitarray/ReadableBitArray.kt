@@ -1,7 +1,7 @@
 package cn.tursom.bitarray
 
 interface ReadableBitArray {
-	val size: Long
+	val maxIndex: Long
 	
 	operator fun get(index: Long): Boolean
 }

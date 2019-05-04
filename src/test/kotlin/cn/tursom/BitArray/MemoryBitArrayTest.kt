@@ -13,6 +13,16 @@ class MemoryBitArrayTest {
 		assert(bitSet[1])
 		assert(!bitSet[2])
 		assert(!bitSet[1000])
-		assert(bitSet.size == 1023L)
+		assert(bitSet.maxIndex == 1023L)
+	}
+
+	@Test
+	fun testTrueCount() {
+		val bitSet = MemoryBitArray(10000)
+		assert(bitSet.trueCount == 0L)
+		bitSet.up(1)
+		assert(bitSet.trueCount == 1L)
+		bitSet.up(10000)
+		assert(bitSet.trueCount == 2L)
 	}
 }

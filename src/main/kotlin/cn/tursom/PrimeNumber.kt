@@ -9,26 +9,30 @@ object PrimeNumber : Iterable<Long> {
 	private val bitSet = MemoryBitArray(defaultState = true)
 	val biggestNumber = sqrt(Long.MAX_VALUE.toDouble()).toLong()
 	val checkedNumber
-		get() = bitSet.size * 2 + 1
+		get() = bitSet.maxIndex * 2 + 1
 
 	operator fun get(num: Long) = when {
 		num < 2L -> false
 		num == 2L -> true
 		num and 1L != 1L -> false
-		num <= biggestNumber -> {
+		num <= biggestNumber -> if (num > checkedNumber && num > biggestNumber shr 4) {
+			checkBigNumber(num)
+		} else {
 			check(num)
 			bitSet[num shr 1]
 		}
-		else -> {
-			check(biggestNumber)
-			untilIterator(sqrt(num.toDouble()).toLong()).forEach {
-				if (num % it == 0L) return false
-			}
-			true
-		}
+		else -> checkBigNumber(num)
 	}
 
 	operator fun get(num: Int) = get(num.toLong())
+
+	fun checkBigNumber(num: Long): Boolean {
+		check(sqrt(num.toDouble()).toLong())
+		untilIterator(sqrt(num.toDouble()).toLong()).forEach {
+			if (num % it == 0L) return false
+		}
+		return true
+	}
 
 	fun save(outputStream: OutputStream) {
 		bitSet.save(outputStream)
@@ -91,14 +95,14 @@ object PrimeNumber : Iterable<Long> {
 	}
 
 	override fun toString(): String {
-//		return "PrimeNumber(checked number=${bitSet.size * 2}, used memory=${bitSet.usedSizeStr})"
-		return "PrimeNumber(checked number=$checkedNumber)"
+//		return "PrimeNumber(checked number=${bitSet.maxIndex * 2}, used memory=${bitSet.usedSizeStr})"
+		return "PrimeNumber(checked number=$checkedNumber, prime count=${bitSet.trueCount}, used memory=${bitSet.usedSizeStr})"
 	}
 
 	private fun check(num: Long) {
 		if (
-			num > (bitSet.size * 2) &&
-			bitSet.resize(min(max(num shr 1, bitSet.size * 2)))
+			num > (bitSet.maxIndex * 2) &&
+			bitSet.resize(min(max(num shr 1, bitSet.maxIndex * 2)))
 		) {
 			reCalc()
 		}
@@ -110,7 +114,7 @@ object PrimeNumber : Iterable<Long> {
 
 	private fun reCalc() {
 		val sqrtMaxNumber = sqrt(checkedNumber.toDouble()).toLong() shr 1
-		val bitSeiSize = bitSet.size
+		val bitSeiSize = bitSet.maxIndex
 		bitSet.down(0)
 		for (i in 1..sqrtMaxNumber) {
 			if (bitSet[i]) {
