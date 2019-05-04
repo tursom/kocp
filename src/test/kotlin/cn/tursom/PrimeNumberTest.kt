@@ -10,17 +10,15 @@ class PrimeNumberTest {
 		println(PrimeNumber)
 		println(PrimeNumber.biggestNumber)
 		PrimeNumber.calc(10000)
+		println()
+		assert(PrimeNumber[997])
+		assert(!PrimeNumber[999])
 		for (i in 1..10000) {
 			if (PrimeNumber[i]) print("$i ")
 		}
-		println()
-		println(PrimeNumber)
-		assert(PrimeNumber[997])
-		assert(!PrimeNumber[999])
-		println(PrimeNumber[20000005])
 		println(PrimeNumber)
 	}
-	
+
 	@Test
 	fun testSave() {
 		println("${System.currentTimeMillis()}: test begin")
@@ -38,7 +36,7 @@ class PrimeNumberTest {
 //		println(PrimeNumber[9])
 //		println(PrimeNumber)
 	}
-	
+
 	@Test
 	fun testDecomposition() {
 		for (i in 1L..100L) {
@@ -51,5 +49,19 @@ class PrimeNumberTest {
 			sb.deleteCharAt(sb.length - 1)
 			println(sb)
 		}
+	}
+
+	@Test
+	fun testCalcTime() {
+		println(time {
+			PrimeNumber.calc(20_0000_0000)
+		})
+	}
+
+	fun time(action: () -> Unit): Long {
+		val t1 = System.currentTimeMillis()
+		action()
+		val t2 = System.currentTimeMillis()
+		return t2 - t1
 	}
 }
