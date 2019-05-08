@@ -8,19 +8,6 @@ import org.junit.Test
 import java.net.SocketTimeoutException
 
 class PrimeNumberServerTest {
-	fun UdpClient.getPrimeNumber(num: Long) {
-		send(num.toByteArray(), 10_000) { bytes, size ->
-			println("$num ${if (bytes[0] == 0.toByte()) "不" else ""}是质数")
-			val sb = StringBuilder()
-			sb.append("$num =")
-			for (j in 1 until size step 8) {
-				sb.append(" ${bytes.toLong(j)} *")
-			}
-			sb.deleteCharAt(sb.length - 1)
-			println(sb)
-			println()
-		}
-	}
 	
 	@Test
 	fun test() {
@@ -29,10 +16,20 @@ class PrimeNumberServerTest {
 		server.start()
 		
 		UdpClient("127.0.0.1", port).use {
-			for (i in -100..100L) {
+			for (i in -10..10L) {
 				while (true) {
 					try {
-						it.getPrimeNumber(i)
+						it.send(i.toByteArray(), 10_000) { bytes, size ->
+							println("$i ${if (bytes[0] == 0.toByte()) "不" else ""}是质数")
+							val sb = StringBuilder()
+							sb.append("$i =")
+							for (j in 1 until size step 8) {
+								sb.append(" ${bytes.toLong(j)} *")
+							}
+							sb.deleteCharAt(sb.length - 1)
+							println(sb)
+							println()
+						}
 						break
 					} catch (e: SocketTimeoutException) {
 					}

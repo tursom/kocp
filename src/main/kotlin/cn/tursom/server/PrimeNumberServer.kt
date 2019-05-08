@@ -3,8 +3,11 @@ package cn.tursom.server
 import cn.tursom.PrimeNumber
 import cn.tursom.datagram.server.SimplifyUdpServer
 
-class PrimeNumberServer(@Suppress("MemberVisibilityCanBePrivate") val port: Int) {
-	private val server = SimplifyUdpServer(port) { data, size, address ->
+class PrimeNumberServer(
+	@Suppress("MemberVisibilityCanBePrivate") val port: Int,
+	threads: Int = 1
+) {
+	private val server = SimplifyUdpServer(port, threads) { data, size, address ->
 		if (size < 8) {
 			send(address, byteArrayOf(0))
 			return@SimplifyUdpServer
