@@ -11,11 +11,13 @@ class PrimeNumberServerTest {
 	fun UdpClient.getPrimeNumber(num: Long) {
 		send(num.toByteArray(), 10_000) { bytes, size ->
 			println("$num ${if (bytes[0] == 0.toByte()) "不" else ""}是质数")
-			print("因数分解: ")
+			val sb = StringBuilder()
+			sb.append("$num =")
 			for (j in 1 until size step 8) {
-				print("${bytes.toLong(j)} ")
+				sb.append(" ${bytes.toLong(j)} *")
 			}
-			println()
+			sb.deleteCharAt(sb.length - 1)
+			println(sb)
 			println()
 		}
 	}
@@ -27,7 +29,7 @@ class PrimeNumberServerTest {
 		server.start()
 		
 		UdpClient("127.0.0.1", port).use {
-			for (i in 1..100L) {
+			for (i in -100..100L) {
 				while (true) {
 					try {
 						it.getPrimeNumber(i)

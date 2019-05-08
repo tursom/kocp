@@ -10,7 +10,7 @@ object PrimeNumber : Iterable<Long> {
 	val biggestNumber = sqrt(Long.MAX_VALUE.toDouble()).toLong()
 	val checkedNumber
 		get() = bitSet.maxIndex * 2 + 1
-
+	
 	operator fun get(num: Long) = when {
 		num < 2L -> false
 		num == 2L -> true
@@ -23,9 +23,9 @@ object PrimeNumber : Iterable<Long> {
 		}
 		else -> checkBigNumber(num)
 	}
-
+	
 	operator fun get(num: Int) = get(num.toLong())
-
+	
 	fun checkBigNumber(num: Long): Boolean {
 		check(sqrt(num.toDouble()).toLong())
 		untilIterator(sqrt(num.toDouble()).toLong()).forEach {
@@ -33,26 +33,26 @@ object PrimeNumber : Iterable<Long> {
 		}
 		return true
 	}
-
+	
 	fun save(outputStream: OutputStream) {
 		bitSet.save(outputStream)
 	}
-
+	
 	fun load(inputStream: InputStream) {
 		bitSet.load(inputStream)
 	}
-
+	
 	fun calc(num: Long) {
 		check(num)
 	}
-
+	
 	fun forEach(action: (num: Long) -> Unit) {
 		action(2)
 		for (i in 3..checkedNumber step 2) {
 			if (get(i)) action(i)
 		}
 	}
-
+	
 	fun getUntil(max: Long, action: (num: Long) -> Unit) {
 		if (max < 2) return
 		action(2)
@@ -60,7 +60,7 @@ object PrimeNumber : Iterable<Long> {
 			if (get(i)) action(i)
 		}
 	}
-
+	
 	fun getUntilEx(max: Long, action: (num: Long) -> Boolean) {
 		if (max < 2) return
 		if (!action(2)) return
@@ -68,7 +68,7 @@ object PrimeNumber : Iterable<Long> {
 			if (get(i) && !action(i)) return
 		}
 	}
-
+	
 	private fun doubleDecomposition(num: Long): Pair<Long, Long> {
 		var ret = Pair(1L, num)
 		getUntilEx(sqrt(num.toDouble()).toLong()) {
@@ -80,10 +80,13 @@ object PrimeNumber : Iterable<Long> {
 		}
 		return ret
 	}
-
+	
 	fun decomposition(num: Long): LongArray {
 		val ret = ArrayList<Long>()
-		var (a, b) = doubleDecomposition(num)
+		var (a, b) = doubleDecomposition(if (num > 0) num else {
+			ret.add(-1)
+			-num
+		})
 		while (a != 1L) {
 			ret.add(a)
 			val (a2, b2) = doubleDecomposition(b)
@@ -93,12 +96,12 @@ object PrimeNumber : Iterable<Long> {
 		ret.add(b)
 		return ret.toLongArray()
 	}
-
+	
 	override fun toString(): String {
 //		return "PrimeNumber(checked number=${bitSet.maxIndex * 2}, used memory=${bitSet.usedSizeStr})"
 		return "PrimeNumber(checked number=$checkedNumber, prime count=${bitSet.trueCount}, used memory=${bitSet.usedSizeStr})"
 	}
-
+	
 	private fun check(num: Long) {
 		if (
 			num > (bitSet.maxIndex * 2) &&
@@ -107,11 +110,11 @@ object PrimeNumber : Iterable<Long> {
 			reCalc()
 		}
 	}
-
+	
 	private fun max(a: Long, b: Long) = if (a > b) a else b
-
+	
 	private fun min(a: Long) = if (a > this.biggestNumber) this.biggestNumber else a
-
+	
 	private fun reCalc() {
 		val sqrtMaxNumber = sqrt(checkedNumber.toDouble()).toLong() shr 1
 		val bitSeiSize = bitSet.maxIndex
@@ -127,33 +130,33 @@ object PrimeNumber : Iterable<Long> {
 			}
 		}
 	}
-
+	
 	override fun iterator() = PrimeNumberIterator()
-
+	
 	class PrimeNumberIterator : Iterator<Long> {
 		private var index = 2L
-
+		
 		override fun hasNext(): Boolean {
 			while (index < checkedNumber && !bitSet[index shr 1]) index++
 			return index < checkedNumber
 		}
-
+		
 		override fun next(): Long {
 			while (!bitSet[index shr 1]) index++
 			return index++
 		}
 	}
-
+	
 	fun untilIterator(max: Long) = PrimeNumberUntilIterator(max)
-
+	
 	class PrimeNumberUntilIterator(val max: Long) : Iterator<Long> {
 		private var index = 2L
-
+		
 		override fun hasNext(): Boolean {
 			while (index < checkedNumber && index <= max && !bitSet[index shr 1]) index++
 			return index < checkedNumber && index <= max
 		}
-
+		
 		override fun next(): Long {
 			while (!bitSet[index shr 1]) index++
 			return index++
