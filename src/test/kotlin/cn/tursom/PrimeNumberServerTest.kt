@@ -15,13 +15,13 @@ class PrimeNumberServerTest {
 		
 		UdpClient("127.0.0.1", port).use {
 			for (i in 1..100L) {
-				it.send(i.toByteArray()) { bytes, size ->
-//					println(size)
+				it.send(i.toByteArray(), 10_000) { bytes, size ->
 					println("$i ${if (bytes[0] == 0.toByte()) "不" else ""}是质数")
 					print("因数分解: ")
 					for (j in 1 until size step 8) {
 						print("${bytes.toLong(j)} ")
 					}
+					println()
 					println()
 				}
 			}

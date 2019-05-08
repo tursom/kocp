@@ -12,23 +12,31 @@ class UdpClient(
 	
 	private val socket = DatagramSocket()
 	
-	fun send(data: ByteArray, callback: ((ByteArray, size: Int) -> Unit)? = null) {
+	fun send(
+		data: ByteArray,
+		timeout: Int = 0,
+		callback: ((ByteArray, size: Int) -> Unit)? = null
+	) {
 		val address = InetSocketAddress(host, port)
 		socket.send(DatagramPacket(data, data.size, address))
-		callback?.let {
-			//定义接受网络数据的字节数组
-			val inBuff = ByteArray(packageSize)
-			//已指定字节数组创建准备接受数据的DatagramPacket对象
-			val inPacket = DatagramPacket(inBuff, inBuff.size, address)
-			socket.receive(inPacket)
-			it(inPacket.data ?: return, inPacket.length)
-		}
+		//定义接受网络数据的字节数组
+		recv(address, ByteArray(packageSize), timeout, callback ?: return)
 	}
 	
 	fun recv(address: SocketAddress, buffer: ByteArray, callback: (ByteArray, size: Int) -> Unit) {
 		val inPacket = DatagramPacket(buffer, buffer.size, address)
 		socket.receive(inPacket)
 		callback(inPacket.data ?: return, inPacket.length)
+	}
+	
+	fun recv(
+		address: SocketAddress,
+		buffer: ByteArray,
+		timeout: Int,
+		callback: (ByteArray, size: Int) -> Unit
+	) {
+		socket.soTimeout = timeout
+		recv(address, buffer, callback)
 	}
 	
 	override fun close() {
