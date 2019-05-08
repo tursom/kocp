@@ -82,6 +82,8 @@ object PrimeNumber : Iterable<Long> {
 	}
 	
 	fun decomposition(num: Long): LongArray {
+		if (num == 0L) return longArrayOf(0L)
+		
 		val ret = ArrayList<Long>()
 		var (a, b) = doubleDecomposition(if (num > 0) num else {
 			ret.add(-1)
